@@ -145,6 +145,15 @@ export interface AuditLogEntry {
   actor_email?: string | null;
 }
 
+export interface GptLabSyncResult {
+  created: number;
+  updated: number;
+  deactivated: number;
+  demos_deactivated: number;
+  models_synced: string[];
+  skipped: string[];
+}
+
 export interface ComplianceModel {
   id: string;
   code: string;

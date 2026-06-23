@@ -17,7 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { modelsApi, scansApi, ApiError } from "@/lib/api";
 import { PERMS } from "@/lib/permissions";
 import { usePaginatedList } from "@/hooks/usePaginatedList";
-import type { ComplianceModel, ModelValidationResult } from "@/lib/types/sprint2";
+import type { ComplianceModel, GptLabSyncResult, ModelValidationResult } from "@/lib/types/sprint2";
 import type { Scan } from "@/lib/types";
 import { formatDate, severityVariant } from "@/lib/utils";
 import { DecisionBadge } from "@/components/ui/DecisionBadge";
@@ -47,6 +47,8 @@ function ModelsContent() {
   const [validationResult, setValidationResult] = useState<ModelValidationResult | null>(null);
   const [scans, setScans] = useState<Scan[]>([]);
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<GptLabSyncResult | null>(null);
 
   const fetchPage = useMemo(
     () => (offset: number, limit: number) =>
@@ -113,8 +115,25 @@ function ModelsContent() {
     setScans(s.items.filter((scan) => scan.status === "completed"));
   }
 
+  async function handleSyncGptlab() {
+    if (!canManagePolicies) return;
+    setFormError(null);
+    setSyncResult(null);
+    setSyncing(true);
+    try {
+      const res = await modelsApi.syncGptlab({ deactivate_demos: true });
+      setSyncResult(res);
+      resetPage();
+      reload();
+    } catch (err) {
+      setFormError(err instanceof ApiError ? err.message : "GPT-Lab sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   function isLocalModel(m: ComplianceModel) {
-    return m.model_type === "local_model" || m.model_type === "open_source";
+    return !m.data_leaves_platform;
   }
 
   return (
@@ -125,6 +144,15 @@ function ModelsContent() {
       />
       <div className="page-container space-y-6">
         {error && <Alert variant="error">{error}</Alert>}
+        {formError && <Alert variant="error">{formError}</Alert>}
+        {syncResult && (
+          <Alert variant="success">
+            GPT-Lab sync complete: {syncResult.created} created, {syncResult.updated} updated
+            {syncResult.deactivated > 0 && `, ${syncResult.deactivated} deactivated`}
+            {syncResult.demos_deactivated > 0 && `, ${syncResult.demos_deactivated} demo models deactivated`}
+            {syncResult.skipped.length > 0 && ` (${syncResult.skipped.length} embedding models skipped)`}.
+          </Alert>
+        )}
 
         <div className="flex flex-wrap gap-3">
           <FormField label="Model type">
@@ -146,6 +174,11 @@ function ModelsContent() {
           <Button variant="secondary" onClick={openValidate}>
             Run validation
           </Button>
+          {canManagePolicies && (
+            <Button variant="secondary" onClick={handleSyncGptlab} disabled={syncing}>
+              {syncing ? "Syncing…" : "Sync from GPT-Lab"}
+            </Button>
+          )}
           {canManagePolicies && (
             <Button onClick={() => setShowCreate((v) => !v)}>
               {showCreate ? "Cancel" : "Register model"}

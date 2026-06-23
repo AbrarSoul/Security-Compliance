@@ -44,8 +44,7 @@ function ModelDetailContent() {
     load();
   }, [load]);
 
-  const isLocal =
-    model?.model_type === "local_model" || model?.model_type === "open_source";
+  const isLocal = model ? !model.data_leaves_platform : false;
 
   if (loading) {
     return (

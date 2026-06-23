@@ -102,6 +102,15 @@ class ValidateModelRequest(BaseModel):
         return self
 
 
+class GptLabSyncResponse(BaseModel):
+    created: int
+    updated: int
+    deactivated: int
+    demos_deactivated: int
+    models_synced: list[str]
+    skipped: list[str]
+
+
 class ModelComplianceValidationResponse(BaseModel):
     id: UUID
     scan_id: UUID

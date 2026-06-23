@@ -108,6 +108,13 @@ class Settings(BaseSettings):
     # Sprint 3 — compliance gap analysis
     encryption_at_rest_enabled: bool = Field(default=False, alias="ENCRYPTION_AT_REST_ENABLED")
 
+    # GPT-Lab model registry sync
+    gptlab_api_key: str = Field(default="", alias="GPTLAB_API_KEY")
+    gptlab_api_base: str = Field(
+        default="https://gptlab.rd.tuni.fi/GPT-Lab/resources/GPU-farmi-004/v1",
+        alias="GPTLAB_API_BASE",
+    )
+
     @field_validator("database_url", mode="before")
     @classmethod
     def ensure_async_driver(cls, value: str) -> str:

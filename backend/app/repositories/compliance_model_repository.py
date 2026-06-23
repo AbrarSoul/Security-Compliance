@@ -22,6 +22,14 @@ class ComplianceModelRepository:
         )
         return result.scalar_one_or_none()
 
+    async def list_by_code_prefix(self, prefix: str) -> list[ComplianceModel]:
+        result = await self.db.execute(
+            select(ComplianceModel)
+            .where(ComplianceModel.code.startswith(prefix))
+            .order_by(ComplianceModel.name.asc())
+        )
+        return list(result.scalars().all())
+
     async def list_models(
         self,
         *,

@@ -6,6 +6,7 @@ import type {
   ComplianceRule,
   ExecutionRequest,
   ExecutionStatus,
+  GptLabSyncResult,
   ModelValidationResult,
   PaginatedResponse,
   ValidateExecutionResponse,
@@ -163,4 +164,19 @@ export const modelsApi = {
     }),
   getValidation: (id: string) =>
     request<ModelValidationResult>(`/models/validations/${id}`),
+  syncGptlab: (params?: {
+    approve_new?: boolean;
+    deactivate_demos?: boolean;
+    deactivate_missing?: boolean;
+  }) => {
+    const q = new URLSearchParams();
+    if (params?.approve_new === false) q.set("approve_new", "false");
+    if (params?.deactivate_demos) q.set("deactivate_demos", "true");
+    if (params?.deactivate_missing === false) q.set("deactivate_missing", "false");
+    const qs = q.toString();
+    return request<GptLabSyncResult>(
+      `/models/sync-gptlab${qs ? `?${qs}` : ""}`,
+      { method: "POST" }
+    );
+  },
 };

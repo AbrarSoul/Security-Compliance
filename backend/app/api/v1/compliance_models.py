@@ -13,9 +13,11 @@ from app.schemas.compliance_models import (
     ComplianceModelListResponse,
     ComplianceModelResponse,
     ComplianceModelUpdate,
+    GptLabSyncResponse,
     ModelComplianceValidationResponse,
     ValidateModelRequest,
 )
+from app.services.gptlab_model_sync_service import GptLabModelSyncService
 from app.services.model_compliance_service import ModelComplianceService
 
 router = APIRouter(prefix="/models", tags=["model-compliance"])
@@ -66,6 +68,36 @@ async def register_model(
     """Register model metadata (admin)."""
     model = await service.register_model(body, created_by_user_id=ctx.user.id)
     return service.to_model_response(model)
+
+
+@router.post("/sync-gptlab", response_model=GptLabSyncResponse)
+async def sync_gptlab_models(
+    approve_new: bool = Query(default=True),
+    deactivate_demos: bool = Query(default=False),
+    deactivate_missing: bool = Query(default=True),
+    ctx: AuthContext = Depends(require_permission(POLICY_MANAGE)),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Pull chat models from GPT-Lab and upsert them into the compliance registry.
+
+    Requires GPTLAB_API_KEY in server environment. API keys are never stored in the registry.
+    """
+    sync_service = GptLabModelSyncService(db)
+    result = await sync_service.sync(
+        actor_user_id=ctx.user.id,
+        approve_new=approve_new,
+        deactivate_demos=deactivate_demos,
+        deactivate_missing=deactivate_missing,
+    )
+    return GptLabSyncResponse(
+        created=result.created,
+        updated=result.updated,
+        deactivated=result.deactivated,
+        demos_deactivated=result.demos_deactivated,
+        models_synced=result.models_synced,
+        skipped=result.skipped,
+    )
 
 
 @router.post(
