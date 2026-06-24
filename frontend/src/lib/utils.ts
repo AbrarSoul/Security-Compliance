@@ -64,6 +64,9 @@ export function flagVariant(value: string | null | undefined): StatusVariant {
     case "low":
     case "resolved":
     case "acknowledged":
+    case "done":
+    case "submitted":
+    case "insignificant":
       return "success";
     case "risky":
     case "warn":
@@ -75,6 +78,7 @@ export function flagVariant(value: string | null | undefined): StatusVariant {
     case "review":
     case "medium":
     case "investigating":
+    case "in_progress":
       return "warning";
     case "non_compliant":
     case "block":

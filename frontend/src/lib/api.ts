@@ -14,6 +14,7 @@ export * from "./api/sprint2";
 export { analyticsApi } from "./api/analytics";
 export { gapsApi } from "./api/gaps";
 export { threatsApi } from "./api/threats";
+export { gairaApi } from "./api/gaira";
 
 // Auth
 export const authApi = {

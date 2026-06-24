@@ -94,6 +94,12 @@ export function Sidebar() {
 
   const governance: NavItem[] = [
     {
+      href: "/gaira",
+      label: "GAIRA",
+      icon: IconShield,
+      show: hasAnyPermission(PERMS.GAIRA_READ, PERMS.GAIRA_READ_ALL),
+    },
+    {
       href: "/policies",
       label: "Policies",
       icon: IconShield,

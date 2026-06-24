@@ -22,6 +22,9 @@ export const PERMS = {
   THREAT_READ: "threat:read",
   THREAT_READ_ALL: "threat:read_all",
   THREAT_MANAGE: "threat:manage",
+  GAIRA_READ: "gaira:read",
+  GAIRA_MANAGE: "gaira:manage",
+  GAIRA_READ_ALL: "gaira:read_all",
 } as const;
 
 export const ROLES = {

@@ -12,14 +12,14 @@ ComplianceGuard helps security & compliance teams answer one question:
 
 It scans your data for sensitive content (PII, secrets, restricted fields), scores the risk, decides if it can be used with a specific AI model, monitors the actual prompts & outputs in real time, alerts you when something looks wrong, and keeps an audit trail of everything.
 
-You will move through three logical stages:
+You will move through four logical stages (GAIRA is under **Governance → GAIRA** in the sidebar):
 
 ```
-   1. Data preparation        2. Execution governance     3. Live monitoring & oversight
- ┌──────────────────────┐   ┌────────────────────────┐   ┌──────────────────────────────┐
- │ Upload → Scan → Fix  │ → │ Validate → Acknowledge │ → │ Monitor → Alerts → Analytics │
- │            ↓ Report  │   │            Execute     │   │  Gaps → Threats → Audit      │
- └──────────────────────┘   └────────────────────────┘   └──────────────────────────────┘
+   0. AI governance (GAIRA)   1. Data preparation        2. Execution governance     3. Live monitoring
+ ┌─────────────────────────┐   ┌──────────────────────┐   ┌────────────────────────┐   ┌──────────────────────────────┐
+ │ Register application    │   │ Upload → Scan → Fix  │ → │ Validate → Acknowledge │ → │ Monitor → Alerts → Analytics │
+ │ Triage → Assess → ROAIA │   │            ↓ Report  │   │            Execute     │   │  Gaps → Threats → Audit      │
+ └─────────────────────────┘   └──────────────────────┘   └────────────────────────┘   └──────────────────────────────┘
 ```
 
 ---
@@ -30,9 +30,9 @@ When you sign up you become a **User** by default. An admin can promote you.
 
 | Role | Typical purpose | Can do |
 |------|-----------------|--------|
-| **User** | Day-to-day analyst | Upload files, run scans & reports, request executions, view your own analytics/gaps/threats |
-| **Admin** | Platform owner | Everything users can + manage policies & rules, **run gap analysis**, **run threat detection**, manage notifications platform-wide |
-| **Auditor** | Compliance officer | Read-only access to **all** users' scans, executions, gaps, threats, audit logs |
+| **User** | Day-to-day analyst | Upload files, run scans & reports, request executions, **register and complete GAIRA assessments**, view your own analytics/gaps/threats |
+| **Admin** | Platform owner | Everything users can + manage policies & rules, **sync GPT-Lab models**, **run gap analysis**, **run threat detection**, manage notifications platform-wide |
+| **Auditor** | Compliance officer | Read-only access to **all** users' scans, executions, gaps, threats, **GAIRA records**, audit logs |
 
 If a button is missing or you see "no permission", your role does not grant that action — ask an admin.
 
@@ -44,11 +44,15 @@ If a button is missing or you see "no permission", your role does not grant that
 2. Click **Sign up**, use an email + a password (≥ 8 chars, upper, lower, digit).
 3. You are signed in automatically — you land on the **Overview** dashboard.
 
-If your account needs admin or auditor access, ask the admin to assign your role; then sign out and back in so your token picks up the new permissions.
+If your account needs admin or auditor access, ask the admin to assign your role; then **sign out and sign back in** so your token picks up the new permissions.
+
+Your current role is shown at the **bottom-left of the sidebar** (below your email), e.g. `user`, `admin`, or `auditor`.
 
 ---
 
 ## 4. The dashboard, section by section
+
+The sidebar groups pages as **Platform**, **Compliance**, **Governance**, **Monitoring**, and **Audit**. Your role appears at the bottom-left (below your email).
 
 ### 4.1 Overview
 **Why:** A quick health check.
@@ -83,11 +87,36 @@ If your account needs admin or auditor access, ask the admin to assign your role
 2. Download **JSON** for systems, **PDF** for humans / auditors.
 
 ### 4.5 Models
-**Why:** You can only use an AI model that the platform knows. Each model has metadata (provider, data-leaves-platform?, retention policy, approval state).
+**Why:** You can only use an AI model that the platform knows. The **Models** page is a **governance registry** — it stores metadata about which AI endpoints your organization allows (provider, deployment, approval state). It does **not** host or run model weights.
+
+**What you see in the table:**
+
+| Column | Meaning |
+|--------|---------|
+| **Name** | Human-readable label (click for full profile) |
+| **Code** | Stable internal ID (e.g. `GPTLAB_LLAMA3_1_8B`) — used in APIs and audit logs |
+| **Provider** | Who runs the model (e.g. GPT-Lab (TUNI), OpenAI, Internal) |
+| **Deployment** | **Local** = data stays in your governed environment; **External** = data is sent to another system |
+| **Approved** | `Yes` = compliance has signed off; `No` = registered but not cleared for general use |
+| **Active** | `Yes` = appears in execution/validation dropdowns |
+
+**Key fields when registering manually (admin):**
+
+- **Code** — unique short identifier (no spaces). Example: `GPTLAB_LLAMA3_1_8B`. Synced models get codes automatically.
+- **Data leaves platform** — `Yes` if prompts/data are sent outside ComplianceGuard (e.g. remote GPT-Lab API). `No` for truly on-prem inference.
+- **Pre-approved** — whether the model is on the org allowlist (`is_approved`).
+
 **What to do:**
-- Browse the list to understand what's approved.
-- Click a model to see its full risk profile.
-- Use **Validate** to dry-run a `dataset + scan + model` combination — the platform tells you upfront if execution would be blocked.
+
+1. Browse the list to see what's approved and active.
+2. Click a model for its full risk profile (endpoint, retention, logging).
+3. Use **Run validation** to dry-run **scan + model** — get `allow` / `warn` / `block` before execution.
+4. **Admins:** click **Sync from GPT-Lab** to pull chat models from your configured GPU farm into the registry (requires `GPTLAB_API_KEY` in backend `.env`). Embedding-only models are skipped. Demo seed models can be deactivated on sync.
+5. **Admins:** use **Register model** to add endpoints manually when not using GPT-Lab sync.
+
+> The two demo rows (`Demo Local LLM`, `Demo External API`) are placeholders for workflow demos. Replace them with real entries (sync or manual register) for production use.
+
+Registered models also appear under **Executions → Validate** when requesting an execution.
 
 ### 4.6 Executions
 **Why:** This is where the platform decides **"can I actually run this dataset through this model?"** before any prompt is sent.
@@ -125,7 +154,50 @@ Open any execution to see its prompts, outputs, guard actions, and reasons.
 
 **Most users:** browse to see what's enforced. **Admins:** create/edit, enable/disable, adjust priorities.
 
-### 4.8 Analytics
+### 4.8 GAIRA (AI risk assessment)
+**Why:** Before you deploy an AI use case, you need a structured **governance** assessment — not just a dataset scan. **GAIRA** (Generative AI Risk Assessment) answers:
+
+> **"Should we build or deploy this AI application, and at what risk level?"**
+
+That is separate from scan/execution checks, which answer:
+
+> **"Is this dataset safe to run on this model right now?"**
+
+**Where:** **Governance → GAIRA** in the sidebar.
+
+**Who:**
+
+| Role | GAIRA access |
+|------|--------------|
+| **User** | Register applications, start assessments, save answers, compute, submit |
+| **Admin** | Same as user |
+| **Auditor** | Read-only — review submitted assessments and ROAIA inventory |
+
+**UI workflow:**
+
+```
+1. Register application     → GAIRA → Register application
+2. Start assessment         → Application detail → Start assessment
+3. Answer questions         → Step tabs, Yes/No or text → Save answers
+4. Compute recommendations  → Shows suggested risk level & next module
+5. Submit                   → Sets overall risk, proceed decision, comments
+6. Verify ROAIA             → GAIRA inventory shows gaira_status: done, risk level
+```
+
+**Recommended first assessment:** **AI Risk Levels (triage)** — a short questionnaire that recommends **GAIRA Light** or **GAIRA Comprehensive** based on your answers.
+
+**Tips:**
+
+- Link a **compliance model** when registering the application (prefills provider, data-leaves-platform, etc.).
+- Link a **scan** when starting an assessment (prefills personal-data indicators).
+- Prefilled answers show a **Prefilled: …** badge — always review; the application owner remains accountable.
+- If **Compute** flags **second-line review required**, add a reviewer email on flagged Step 4 answers before submit.
+
+**ROAIA inventory** (main GAIRA page) lists all registered AI applications with GAIRA status, risk level, owner, and provider.
+
+> Deeper detail (scoring rules, API reference, glossary): **[`GAIRA_USER_GUIDE.md`](GAIRA_USER_GUIDE.md)**
+
+### 4.9 Analytics
 **Why:** Trends over days/weeks — not the raw events.
 **What you see:**
 - Total scans, blocked / allowed counts, average risk score
@@ -136,7 +208,7 @@ Open any execution to see its prompts, outputs, guard actions, and reasons.
 **Filters:** time window (1 / 7 / 30 days), optional user / model filters.
 **When to use:** Weekly reviews, before an audit, to spot abnormal traffic.
 
-### 4.9 Gap analysis
+### 4.10 Gap analysis
 **Why:** Reads your current platform state and tells you **what's missing** to be compliant: e.g. "encryption at rest disabled", "no MFA policy", "no rule for password masking".
 **Workflow:**
 1. **Open gaps tab** — current unresolved gaps grouped by severity.
@@ -153,7 +225,7 @@ Open any execution to see its prompts, outputs, guard actions, and reasons.
 
 **Tip:** Treat `critical` gaps as production blockers; `medium`/`low` can usually wait for the next sprint.
 
-### 4.10 Threat detection
+### 4.11 Threat detection
 **Why:** Real-time security monitoring on top of the compliance layer.
 **What it detects:**
 - Repeated guard blocks from the same user (brute force probing)
@@ -170,12 +242,12 @@ Open any execution to see its prompts, outputs, guard actions, and reasons.
    - **Resolve** — closes the threat.
 4. **Run detection** (admin) — recomputes threats from recent events.
 
-### 4.11 Audit logs
+### 4.12 Audit logs
 **Why:** Immutable record of who did what — required for compliance and forensics.
 **What you see:** Every login, scan, execution decision, guard action, policy change, threat update, with actor, target, IP, timestamp.
 **Who has access:** Anyone with `audit:read` (typically admins + auditors).
 
-### 4.12 Notifications
+### 4.13 Notifications
 **Why:** You don't have to refresh — the system pushes alerts.
 **How:** Bell icon (or `/notifications` if surfaced) shows unread count. Alerts fire when:
 - A guard blocks one of *your* prompts/outputs
@@ -187,37 +259,33 @@ Open any execution to see its prompts, outputs, guard actions, and reasons.
 
 ---
 
-## 4.13 GAIRA (AI risk assessment)
-
-**Why:** Before you deploy an AI use case, you need a structured governance assessment — not just a dataset scan. GAIRA (Generative AI Risk Assessment) covers organizational AI risk, EU AI Act classification, controls, and DPIA-style questions.
-
-**What you can do today (API):**
-
-1. Register an **AI application** (ROAIA inventory entry).
-2. Run **AI Risk Levels** triage → system recommends GAIRA Light or Comprehensive.
-3. Complete a **GAIRA Light** (or Comprehensive) assessment with auto-prefill from linked scans and models.
-4. **Submit** the assessment → updates the application's risk level and GAIRA status.
-
-**Who:** Users and admins can create and submit assessments (`gaira:manage`). Auditors can read submitted records (`gaira:read`).
-
-> Full walkthrough, API examples, scoring rules, and glossary: **[`GAIRA_USER_GUIDE.md`](GAIRA_USER_GUIDE.md)**
-
----
-
 ## 5. The end-to-end happy path (typical day)
 
+**New AI project (governance first):**
+
 ```
-1. Upload dataset           → Files
-2. Run scan                 → Scans   (fix any critical findings first)
-3. Generate report          → Reports (optional, for audit trail)
-4. Validate execution       → Executions  (Dataset + Scan + Model)
-5. Acknowledge warning?     → Yes / No
-6. Start execution          → Live guard runs prompt + output checks
-7. Watch notifications      → Real-time alerts on blocks/warnings
-8. Check analytics weekly   → Analytics
-9. Run gap analysis monthly → Gaps (admin)
-10. Review threats          → Threats / Audit logs
+1. Register AI application     → GAIRA → Register application
+2. Run AI Risk Levels triage   → Start assessment → answer → compute → submit
+3. Complete GAIRA Light/Comp.  → As recommended by triage
+4. (Admin) Sync real models    → Models → Sync from GPT-Lab (or register manually)
 ```
+
+**Operational compliance (dataset + execution):**
+
+```
+1. Upload dataset              → Files
+2. Run scan                    → Scans   (fix any critical findings first)
+3. Generate report             → Reports (optional, for audit trail)
+4. Validate execution          → Executions  (Dataset + Scan + Model)
+5. Acknowledge warning?        → Yes / No
+6. Start execution             → Live guard runs prompt + output checks
+7. Watch notifications         → Real-time alerts on blocks/warnings
+8. Check analytics weekly      → Analytics
+9. Run gap analysis monthly    → Gaps (admin)
+10. Review threats             → Threats / Audit logs
+```
+
+> GAIRA and execution validation are **separate gates** today. A completed GAIRA assessment does not automatically block executions — treat `gaira_status: done` as a policy requirement before production use.
 
 ---
 
@@ -227,8 +295,8 @@ The UI is dark-themed with lime accents for branding. **Status flags** keep sema
 
 | Color | Meaning | Common labels |
 |-------|---------|---------------|
-| 🟢 Green | Good / safe / done | `compliant`, `allow`, `allowed`, `low`, `started`, `running`, `completed`, `enabled`, `active`, `resolved`, `acknowledged`, `approved` |
-| 🟠 Amber | Caution / pending | `risky`, `warn`, `warning`, `medium`, `pending_*`, `investigating`, `review` |
+| 🟢 Green | Good / safe / done | `compliant`, `allow`, `allowed`, `low`, `done`, `submitted`, `insignificant`, `started`, `running`, `completed`, `enabled`, `active`, `resolved`, `acknowledged`, `approved` |
+| 🟠 Amber | Caution / pending | `risky`, `warn`, `warning`, `medium`, `pending_*`, `in_progress`, `investigating`, `review`, `draft` |
 | 🔴 Red | Bad / blocked / failed | `non_compliant`, `block`, `blocked`, `interrupted`, `critical`, `high`, `failed`, `error`, `denied` |
 | 🔵 Blue | Informational / in-progress | `info`, `queued`, `validating`, `validated`, `scanning` |
 | ⚪ Grey | Inactive / N/A | `disabled`, `inactive`, `draft`, `cancelled`, `unknown` |
@@ -244,7 +312,12 @@ Risk score colors follow the same scale:
 
 | Problem | Likely cause | Fix |
 |---------|--------------|-----|
-| "No permission" banner on a page | Role doesn't include the perm | Ask admin to assign role; re-login |
+| "No permission" banner on a page | Role doesn't include the perm | Ask admin to assign role; **sign out and sign back in** |
+| No **Sync from GPT-Lab** on Models | Not admin (`policy:manage`) | Ask admin to promote you; re-login |
+| GPT-Lab sync fails | Missing/invalid API key or VPN | Set `GPTLAB_API_KEY` in `backend/.env`; restart backend; connect to TUNI VPN if off campus |
+| Models show **External** for GPT-Lab | Data is sent to remote GPU farm | Expected — `data_leaves_platform: Yes` is correct for GPT-Lab |
+| GAIRA page missing or 403 | Migration not run or stale token | Run `alembic upgrade head`; sign out and back in |
+| GAIRA submit rejected | Flagged Step 4 without 2nd-line reviewer | Add `second_line_reviewer` on flagged answers in the wizard |
 | Execution blocked with no obvious reason | A critical finding or a runtime rule fired | Open execution → check `blocking_reasons` and audit log |
 | Notifications never arrive | Outbox worker disabled or prefs muted | Admin: confirm `MONITORING_OUTBOX_WORKER_ENABLED=true`; user: check notification preferences |
 | Gap analysis says "no gaps" but you expect some | Analysis hasn't been re-run | Admin → **Run analysis** |
@@ -264,15 +337,22 @@ Risk score colors follow the same scale:
 - **Posture score** — single 0-100 gap-analysis score; higher = healthier compliance posture.
 - **Severity** — `critical` > `high` > `medium` > `low`.
 - **Session** — a real-time monitoring window grouping prompts/outputs of one execution.
+- **Model registry** — catalog of approved AI endpoints (metadata only; not model weights). See **Models**.
+- **Code** — stable unique ID for a registered model (e.g. `GPTLAB_LLAMA3_1_8B`), distinct from the display name.
+- **Data leaves platform** — whether using a model sends data outside the ComplianceGuard environment.
+- **Pre-approved** — admin flag (`is_approved`) indicating compliance has cleared the model for use.
 - **GAIRA** — Generative AI Risk Assessment framework for project-level AI governance. See [`GAIRA_USER_GUIDE.md`](GAIRA_USER_GUIDE.md).
-- **ROAIA** — Records of AI Activities; inventory of registered AI applications in ComplianceGuard.
+- **ROAIA** — Records of AI Activities; inventory of registered AI applications in ComplianceGuard (**GAIRA** page).
+- **Assessment** — one run of a GAIRA module (e.g. AI Risk Levels, GAIRA Light) for an application.
 
 ---
 
 ## 9. Where to go next
 
 - New developer? Read [`backend/README.md`](backend/README.md) for setup and API endpoints.
-- **GAIRA / AI risk assessment?** Read [`GAIRA_USER_GUIDE.md`](GAIRA_USER_GUIDE.md).
+- **Running locally?** See [`Running_commands.md`](Running_commands.md).
+- **GAIRA / AI risk assessment (detailed)?** Read [`GAIRA_USER_GUIDE.md`](GAIRA_USER_GUIDE.md).
+- **GPT-Lab local models?** See [`Local Models/Using_models.md`](Local%20Models/Using_models.md).
 - Working on monitoring / guard / analytics? Read [`backend/docs/SPRINT3_TECHNICAL.md`](backend/docs/SPRINT3_TECHNICAL.md).
 - API reference: `http://localhost:8000/docs` (when the backend is running).
 
