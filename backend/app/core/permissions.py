@@ -49,6 +49,11 @@ THREAT_READ = "threat:read"
 THREAT_READ_ALL = "threat:read_all"
 THREAT_MANAGE = "threat:manage"
 
+# GAIRA AI risk assessment
+GAIRA_READ = "gaira:read"
+GAIRA_MANAGE = "gaira:manage"
+GAIRA_READ_ALL = "gaira:read_all"
+
 # Role names (match seeded `roles.name`)
 ROLE_ADMIN = "admin"
 ROLE_USER = "user"
@@ -85,6 +90,9 @@ ALL_PERMISSIONS: tuple[str, ...] = (
     THREAT_READ,
     THREAT_READ_ALL,
     THREAT_MANAGE,
+    GAIRA_READ,
+    GAIRA_MANAGE,
+    GAIRA_READ_ALL,
 )
 
 ROLE_PERMISSION_MAP: dict[str, tuple[str, ...]] = {
@@ -104,6 +112,8 @@ ROLE_PERMISSION_MAP: dict[str, tuple[str, ...]] = {
         ANALYTICS_READ,
         GAP_READ,
         THREAT_READ,
+        GAIRA_READ,
+        GAIRA_MANAGE,
     ),
     ROLE_AUDITOR: (
         REPORT_READ_ALL,
@@ -120,5 +130,7 @@ ROLE_PERMISSION_MAP: dict[str, tuple[str, ...]] = {
         GAP_READ_ALL,
         THREAT_READ,
         THREAT_READ_ALL,
+        GAIRA_READ,
+        GAIRA_READ_ALL,
     ),
 }

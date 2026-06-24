@@ -7,6 +7,7 @@ from app.api.v1 import (
     compliance_models,
     executions,
     files,
+    gaira,
     gaps,
     monitoring,
     notifications,
@@ -35,6 +36,7 @@ api_router.include_router(compliance_models.router)
 api_router.include_router(executions.router)
 api_router.include_router(analytics.router)
 api_router.include_router(gaps.router)
+api_router.include_router(gaira.router)
 api_router.include_router(threats.router)
 api_router.include_router(monitoring.router)
 api_router.include_router(prompt_monitoring.router)

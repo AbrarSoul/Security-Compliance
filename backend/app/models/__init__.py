@@ -12,6 +12,7 @@ from app.models.execution_result import ExecutionResult
 from app.models.guard_enforcement_log import GuardEnforcementLog
 from app.models.notification import Notification, NotificationPreference
 from app.models.compliance_gap import ComplianceGap, GapAnalysisRun
+from app.models.gaira import AIApplication, GairaAssessment
 from app.models.security_threat import SecurityEventLog, SecurityThreat, ThreatDetectionRun
 from app.models.file import File
 from app.models.file_metadata import FileMetadata
@@ -59,6 +60,8 @@ __all__ = [
     "NotificationPreference",
     "GapAnalysisRun",
     "ComplianceGap",
+    "AIApplication",
+    "GairaAssessment",
     "ThreatDetectionRun",
     "SecurityThreat",
     "SecurityEventLog",

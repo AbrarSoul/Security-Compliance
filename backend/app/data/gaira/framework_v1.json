@@ -1,0 +1,3407 @@
+{
+  "source": "Rosenthal_GAIRA.json",
+  "version": "Version 25.8.2024",
+  "modules": {
+    "ai_risk_levels": {
+      "key": "ai_risk_levels",
+      "title": "Determining AI Risk Levels of Applications",
+      "version": "Version 25.8.2024",
+      "overview": "Employees use an approved tool with AI that supports them in their personal daily tasks where its failure to do so correctly at worst results in their own personal loss of efficiency they are ready to, and will, deal with (no impact on others)",
+      "metadata_fields": [],
+      "steps": [
+        {
+          "id": "1",
+          "title": "Are the AI risks of your application insignificant?",
+          "instruction": null
+        },
+        {
+          "id": "2",
+          "title": "Does your application involve high AI risks?",
+          "instruction": null
+        },
+        {
+          "id": "3",
+          "title": "Does your application involve medium AI risks?",
+          "instruction": null
+        }
+      ],
+      "questions": [
+        {
+          "id": "1.01",
+          "text": "An approved tool with AI is used for executing a narrow, subordinate and schematic task and has proven to be reliable in doing so (we fully trust it)",
+          "step_id": "1",
+          "answer_type": "boolean",
+          "explanation": "Examples include OCR, biometric user authentication in a broadly used commercial product (e.g., mobile phone fingerprint reader).",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "1.03",
+          "text": "An approved tool  with AI is used for simulations, analyses and tests that can have no impact on real processes, systems or others and involve neither personal data, nor third party content nor secrets (except with the consent of these affected third parties)",
+          "step_id": "1",
+          "answer_type": "boolean",
+          "explanation": "Examples including analyzing production or market data for certain patterns, whereas any patterns found would be further investigated. If personal data of third parties and third party secrets or copyrighted or otherwise protected content is to be used, this category only applies if there is consent of these third parties to use their data or content.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "1.04",
+          "text": "A tool with AI is only used for testing whether it can fulfill an envisaged task, it is not provided with personal data, third-party content or secrets, is operated securely, and the output is kept confidential and not in any way used in the \"real world\" or only in parallel to productive systems and not relied upon.",
+          "step_id": "1",
+          "answer_type": "boolean",
+          "explanation": "Examples include using an LLM in a lab environment to test whether it is suitable for a new company service, using a security breach detector side by side with the existing security tools to find out whether it could further improve security.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.01",
+          "text": "Will we train an AI model on third-party restricted content or non-public personal data (without consent)?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "This intends to cover those model training activities where the legal basis for performing it is legitimate interest or similar grounds as opposed to consent or a contractual permission. It covers both pre-training and fine tuning. This only applies where the data used is either non-public personal data or legally protected third party content (e.g., copyrighted works) that is not publicly and freely available.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.02",
+          "text": "Will AI take decisions or control that can significantly impact us or others or will many fear so?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "An example could be a system where AI is used to pre-select job candidates based on their CV or to assess creditworthiness. This risk category also covers use cases where a significant amount of people (e.g., 30 percent) fear that AI will take over control of aspects of their life that they consider important.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.03",
+          "text": "Will AI interact with a large number of people concerning very risky or confidential matters?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "An example could be an AI chatbot that advises users on compliance or legal matters, or that provides medical or psychological advice. Another example would be a robo-advisor for investments. As opposed to that, a conversational agent using AI for customer support does normally not fall in this category. The category could also cover AI agents that are included in certain products, for example, a self-driving car. This question both covers the risk that the AI will provide inappropriate or incorrect output or that it will receive input that needs increased protection.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.04",
+          "text": "Will AI play an essential role in operating critical infrastructure for us or others?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "This would include, for example, a system using AI to control a self-driving car, a manufacturing line or the security of a critical network. The AI function needs to play an essential role, e.g., the correct functioning to a large part depends on the correct functioning of the AI.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.05",
+          "text": "Does our use of AI bear an increased risk of significant negative media coverage (\"shitstorm\")?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "This is about whether what you intend is likely to cause a shitstorm in social media or otherwise because the public would consider it a no go for your company, i.e. it takes into account the specific expectations that stakeholder have with regard to your company.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.06",
+          "text": "Does the application qualify as prohibited or high-risk under the EU AI Act?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "Select this if your analysis comes to the conclusion that the use case is likely prohibited or high-risk under the EU AI Act (in the latter case unless the de-minimis-exemption applies for sure). It is not relevant whether you are a provider, deployer or another role, and it is not relevant whether the AI Act actually applies to you with regard to its geographic reach.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.07",
+          "text": "Can AI failure reasonably result in considerable financial losses or other damage to us or others?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "While any system failure can usually result in damage to those who relied on it, we are looking at those where the failure of the AI component to operate correctly bears an increased probability of causing considerable financial or other harm to your company or others (including in particular customers). For instance, an AI system used in financial trading, healthcare diagnostics, or autonomous driving could cause significant financial loss, legal repercussions, or physical harm if it fails. Damage that will be covered by the company as opportunity costs (and will thus be fully cured) is not considerable. Another example could be an AI system where its failure could harm a large number of customers in a relevant (even non-financial) manner.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.08",
+          "text": "Can AI failure reasonably affect our ability to comply with applicable law/regulations in a serious manner?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "This could be the case where we rely entirely on AI systems and their correct functioning to fulfil legal obligations (e.g. compliance with anti-money laundering obligations), and where compliance with these obligations is very important because, for example, we play an important role in the system (e.g. as a bank in relation to transactions).",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.09",
+          "text": "Does the AI component require a significant investment or hold strategic importance for us?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "This category aims at projects where it would cause the company significant financial, operational or reputational issues if it had to postpone, change or stop the project due to AI risks materialising that have not been assessed in the first place.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "2.10",
+          "text": "Do the AI aspects of the application otherwise indicate that there are high risks?",
+          "step_id": "2",
+          "answer_type": "boolean",
+          "explanation": "You have to ask yourself whether you see any other high financial, operational, reputational or compliance risks for your company due to the AI aspects of the application.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.01",
+          "text": "Will AI systematically support decisions that can significantly impact us or others?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "Here, the AI system does not take a decision and does not have technical control, but will to have material influence on the decision making by humans. This only applies to applications where such support is intended, not coincidential and not rare (thus \"systematically\"). Examples could include systems that uses AI to analyse job applicants, to propose significant investments, to detect alleged compliance violations. The decisions do not have to involve individuals.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.02",
+          "text": "Will AI be used to systematically assess individuals (or their behaviour) for productive purposes?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "This covers those cases that are not covered by the preceding category because there is no immediate decision involved or because a decision is not only supported, but made (with such decision, however, not triggering  a \"high\" risk). An example could be an AI function that analyses the usage of an online platform and causes the online platform to display specific content (e.g., a recommender system, a function that controls the content feed or targets advertisements).",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.03",
+          "text": "Will AI interact with a large number external third parties on behalf of the organisation?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "Examples could include an AI chatbot that provide customer service on the website of your company, and where people will reasonably expect that you accept responsibility for what the chatbot states (e.g., product or price information), even if there are some disclaimers.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.04",
+          "text": "Will the AI component of the application be an interesting target for manipulation or attacks?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "This question assesses whether the AI component bears certain increased security risks. An AI system that handles sensitive data, financial transactions, or critical operations (e.g., fraud detection, cybersecurity) could be a high-value target for attackers.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.05",
+          "text": "Can AI failure reasonably result in financial losses or other damage to us or others?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "While any system failure can usually result in damage to those who rely on it, we are looking at those where the failure of the AI component to operate correctly bears an increased probability of causing damage to your company or others. For instance, an AI system wrongly advising a customer may result in the company be required to pay a compensation.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.06",
+          "text": "Will AI be used to systematically process sensitive or third party content or secrets?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "This question concerns the handling of confidential or otherwise restricted information by AI on a systematic basis, i.e. not only coincidentially and not as a rare event. Examples include processing medical records, legal documents, proprietary business data of others or copyright protected content that is available only under restrictive or paid license terms.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.07",
+          "text": "Will we sell a product or service where AI is an important part of it?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "Here, AI is provided to third parties for their own, independent use, for example as part of a hardware or software product, or a service. However, AI must be an important feature of the product or service, such as in smart home devices, virtual assistants, or AI-driven analytics platforms, or play an important role for the correct functioning of the product or service, even if it is not marketed as such.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.08",
+          "text": "Will our AI training or application be based on data that will have to be kept anonymous?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "This refers to cases (e.g., training of an AI model, a RAG implementation) where data is used in a form that could identify individuals or other third parties, but where we are at the same time under an obligation to ensure that users of the model or application cannot identify them.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.09",
+          "text": "Will we train an AI model on public and freely accessible personal data or third party content (without consent)?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "This intends to cover those model training activities where the legal basis for performing it is legitimate interest or similar grounds as opposed to consent or a contractual permission. It covers both pre-training and fine tuning. This only applies to cases where all training data is publicly and freely accessible, e.g., available by way of an Internet crawler.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.10",
+          "text": "Will the quality of the AI output (correctness, bias etc.) be of high importance for success?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "For applications like hiring processes, loan approvals, or medical diagnoses, the correctness and impartiality of AI outputs are important. However, do not consider the measures that you will implement to ensure quality, but rather how important they are.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.11",
+          "text": "Will our use of AI likely result in a considerable amount of employees or other people to have concerns?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "This question evaluates the potential impact of adoption of the envisaged AI application with regard to its stakeholders, including the public (a considerable portion of a defined group of people would be 30% or more). Concerns may arise from job displacement, ethical implications, or transparency issues. Only consider reactions to the AI aspects of the application.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.12",
+          "text": "Will we be using AI or an AI provider that is unknown, intransparent or of questionable reputation?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "Examples could be startups without relevant references, or known providers that have made more than usual negative headlines concerning issues that are relevant also for your project (e.g., issues concerning sub-standard security). Another example would be a provider who is not transparent about the technology and use of AI.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.13",
+          "text": "Will AI perform a function subject to industry-specific regulations or help ensure legal compliance ?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "This question is to identify those applications that are either themselves subject to industry- or product-specific regulations (i.e. not only generic AI and non-AI regulations) or are used to ensure the company's compliance with industry- or product-specific regulations (e.g., tools for assessing legal compliance). Sectors like finance, healthcare, utility, and transportation are often subject to such regulations.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "id": "3.14",
+          "text": "Do the AI aspects of the application otherwise indicate that there are medium risks?",
+          "step_id": "3",
+          "answer_type": "boolean",
+          "explanation": "You have to ask yourself whether you see any other medium financial, operational, reputational or compliance risks for your company due to the AI aspects of the application.",
+          "options": [
+            "Yes",
+            "No"
+          ]
+        }
+      ]
+    },
+    "gaira_light": {
+      "key": "gaira_light",
+      "title": "Generative AI Risk Assessment (GAIRA) – Light",
+      "version": "Version 25.8.2024",
+      "overview": "Instruction: Fill out the below fields with a description of the application at issue. Also include information about the personal data that may be processed by the application, unless you do not have any such personal data. The information you enter is for information purposes. It will allow those who need to check the compliance and assess the risks of your application to better understand what you are doing and why.",
+      "metadata_fields": [
+        {
+          "key": "company",
+          "label": "Company",
+          "example_value": "Bank ABC"
+        },
+        {
+          "key": "department",
+          "label": "Department",
+          "example_value": "Wealth Management"
+        },
+        {
+          "key": "application_owner",
+          "label": "Application owner",
+          "example_value": "Peter Parker"
+        },
+        {
+          "key": "status_and_date_of_risk_assessment",
+          "label": "Status and date of risk assessment",
+          "example_value": "In progress"
+        },
+        {
+          "key": "name_of_application",
+          "label": "Name of application",
+          "example_value": "Project Alpha"
+        },
+        {
+          "key": "scope_of_assessment_includes",
+          "label": "Scope of assessment includes",
+          "example_value": "The implementation and use of the system."
+        },
+        {
+          "key": "scope_of_assessment_does_not_include",
+          "label": "Scope of assessment does not include",
+          "example_value": "The underlying cloud infrastructure (i.e. our tenant), including its security"
+        }
+      ],
+      "steps": [
+        {
+          "id": "1",
+          "title": "What is your application about?",
+          "instruction": null
+        },
+        {
+          "id": "2",
+          "title": "Is your application subject to the EU AI Act?",
+          "instruction": "The EU AI Act will govern, once the relevant provisions become applicable in the 6-36 months following August 1, 2024, a number of AI use cases, whether they take place in the EU or not (i.e. the AI Act has extra-territorial effect). The following section lets you determine whether the AI Act will apply to your use case, whether your use case is prohibited under the AI Act or regulated as a high-risk AI system, and whether you are subject to the AI Act and in which role. Note that even if you do not have a high-risk AI system, some regulations (mainly concerning transparency) apply."
+        },
+        {
+          "id": "3",
+          "title": "Is your application likely to involve high risks for the company?",
+          "instruction": "The EU AI Act will govern, once the relevant provisions become applicable in the 6-36 months following August 1, 2024, a number of AI use cases, whether they take place in the EU or not (i.e. the AI Act has extra-territorial effect). The following section lets you determine whether the AI Act will apply to your use case, whether your use case is prohibited under the AI Act or regulated as a high-risk AI system, and whether you are subject to the AI Act and in which role. Note that even if you do not have a high-risk AI system, some regulations (mainly concerning transparency) apply."
+        },
+        {
+          "id": "4",
+          "title": "How are you dealing with the typical risks of generative AI?",
+          "instruction": "Not all AI applications and other AI projects need to undergo a comprehensive risk assessment. In many cases, a \"light\" assessment of the risks is sufficient. The below questions help you to understand whether you should do a comprehensive assessment or whether a \"light\" assessment appears sufficient. Answer the questions and the form will provide you with a corresponding recommendation. At the end, the decision is yours. If you do not follow the recommendation, you may want to document the reason."
+        },
+        {
+          "id": "5",
+          "title": "Data Protection Impact Assessment (DPIA) (only if personal data is processed)",
+          "instruction": "Go through all questions below (except for those that are faded out). Start at the top and provide your answer in column \"E\". Depending on the answers to the \"Preparatory questions\", some of the following questions will automatically fade out and do not need to be answered. In column \"F\" you should provide a description or reason for your answer, in particular if your answer may be problematic. Depending on your answer, the form will tell you whether your answer is, indeed, problematic. In such a case, a warning will appear in column \"G\". If this is the case, you can only proceed if you have asked your \"2nd line\" functions (e.g., your legal department, the compliance officer, the DPO, the AI officer, the CISO, etc.) for their assessment of the situation. They will include their recommendation in column \"H\" and provide their identifier in column \"I\". Once this has happened, the application owner can take a decision whether or not to accept the risk. At the end of this section, include the number of years you believe the situation will remain stable (it will determine the calculation when to revisit this assessment in any event)."
+        },
+        {
+          "id": "6",
+          "title": "Conclusion",
+          "instruction": "Go through all of the risk scenarios below (if you believe relevant risks concerning your processing of personal data are not covered, you should add them). Each of them describes something that could happen with regard to the processing of personal data that is unwanted and unplanned for, but could potentially result in negative consequences for the data subjects, i.e. the individuals about whom we are processing personal data. In column \"D\" you should list the most important measures you have or plan to implement to prevent this from happening (e.g., the security measures you envisage, privacy notices, human oversight). Then select the probability with which you believe that the scenario could nevertheless (i.e. despite all the mitigating measures) happen in the time period of the DPIA (see below, by default three years)). In column \"F\" please describe the reasonably possible negative consequences for the data subjects and then rate their personal exposure to damage (not the exposure of the organisation), should the risk scenario occur. The system will calculate the residual risk, and you can provide a final comment on it (for instance why you believe it is particular high or low). Have the 2nd line comment on it (or help you if you)."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1.01",
+          "text": "Area in which the application is to be used:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.02",
+          "text": "What is planned:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.03",
+          "text": "Interests pursued:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.04",
+          "text": "GenAI techniques to be used (incl. model):",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.05",
+          "text": "Providers involved and their roles:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.06",
+          "text": "Description of input data:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.07",
+          "text": "Description of output data:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.08",
+          "text": "Period of time and frequency of use:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.09",
+          "text": "Training or fine-tuning of the AI model, RAG1:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.10",
+          "text": "Categories of data subjects, if any:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.11",
+          "text": "Categories of personal data, if any:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.12",
+          "text": "Other persons or groups that may be affected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.13",
+          "text": "Measures for human oversight:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.14",
+          "text": "Measures for handling issues detected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.15",
+          "text": "Measures to control cybersecurity risks:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.16",
+          "text": "Measures to control AI risks (other technical):",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.17",
+          "text": "Measures to control AI risks (other organizational):",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.18",
+          "text": "Project plan:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.19",
+          "text": "Other aspects:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.20",
+          "text": "The positive effects expected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.01",
+          "text": "Do you make use of an automated component (e.g., program, IC) that generates relevant output based on input at least partially autonomous (i.e. based on rules not defined by human beings)?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.02",
+          "text": "Could your application be qualified as doing at least one of these activities listed in Art. 5 AI Act?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.03",
+          "text": "Could your application be qualified as doing at least one of these activities listed in Art. 6 AI Act?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.04",
+          "text": "Does the high-risk AI system nevertheless (i) pose no significant risk of harm (e.g., narrow procedural task, quality control of human activities or completed decision making) and (ii) does it not perform any profiling?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.05",
+          "text": "Are you creating an AI model  that displays significant generality and is capable of competently performing a wide range of distinct tasks that can be integrated into a variety of downstream systems or applications?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.06",
+          "text": "Will you have developped (yourself or through a third-party) the AI system or model, partially or fully?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.07",
+          "text": "Will you be the first one placing the AI system or the general-purpose AI model on the EU market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.08",
+          "text": "Will you be the first one putting the AI system into service by yourself or by someone else in the EU?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.09",
+          "text": "Will you do either of the two foregoing activities under your own name or trademark?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.10",
+          "text": "Will you put your name or trademark on the high-risk AI system that is already on the EU market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.11",
+          "text": "Will you make substantial modifications to the high-risk AI system that is already on the EU market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.12",
+          "text": "Will you be using the AI system for a high-risk activity (as above), even though the AI system was neither intended to be used for such activity by the provider of the system nor itself is high-risk?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.13",
+          "text": "Is the AI system a safety component of your product, and will you (ii) place it on the EU market with your product under your own name or trademark or (ii) put it into service in the EU under your own name or trademarkt after the product has been placed on the market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.14",
+          "text": "Although you are not a provider, will you still make the AI system available on the EU market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.15",
+          "text": "Are you established in the EU and will you place the AI system on the EU market under the name or trademark of a third-party outside the EU?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.16",
+          "text": "Will you be using the AI system under your own authority?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.17",
+          "text": "Are you established or located in the EU?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.18",
+          "text": "Is the output produced by the AI system intended to be used in the EU?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.01",
+          "text": "Will we create or further train the AI model we use for our application (not including RAG1))?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.02",
+          "text": "Will we let our application take decisions on other people that they will find important?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.03",
+          "text": "Will the application interact with a large number of people concerning sensitive topics?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.04",
+          "text": "Would we consider legal steps if a 3rd party used such an application against us or with our data?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.05",
+          "text": "Does the application have a high potential to cause negative headlines in the media (\"shitstorm\")?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.06",
+          "text": "Does the application qualify as a prohibited or High-Risk AI System as per the EU AI Act (see Step 2)?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.07",
+          "text": "Will we be using our AI application not only for our purposes, but also offering it to third parties?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.08",
+          "text": "Does the application require a large investment, or is it of strategic importance?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.01",
+          "text": "Will we use one or several 3rd party providers (with access to our data)?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.02",
+          "text": "Could our use of them result in personal data being transferred to \"unsafe\" countries?2)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.03",
+          "text": "May any of our providers monitor the input or output (e.g., for safety, ethics)?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.04",
+          "text": "May any of our providers use our data for ist own/third party purposes (e.g., AI training)?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.05",
+          "text": "Does the application involve data that is subject to official or professional secrecy?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.06",
+          "text": "Does the application involve personal data?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.07",
+          "text": "Does the application involve other data that is confidential or legally protected?3)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.08",
+          "text": "Do we have a proper data processing agreement with our data processing provider(s)?4)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.09",
+          "text": "Do we properly address the transfer of personal data to \"unsafe\" countries with them?5)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.10",
+          "text": "Are our provider(s) approved for use with official/professional secrecy data (where necessary)?6)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.11",
+          "text": "Do our provider(s) contracts protect the confidential or legally protected data we may be using?4)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.12",
+          "text": "Have we amended the privacy notice (where necessary)?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.13",
+          "text": "Is the application included in the records of processing activities (where necessary)?7)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.14",
+          "text": "Are we securely logging the input, output and other use of the application?9)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.15",
+          "text": "Is our use of 3rd party confidential and protected data in line with our contractual obligations?10)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.16",
+          "text": "Have we opted out from our data being used by our provider(s) or are we fine with it?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.17",
+          "text": "Have we opted out from our data being monitored by our provider(s) or are we fine with it?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.18",
+          "text": "Have we ensured that our AI solution will not leak confidential data or personal data to others?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.19",
+          "text": "Does our AI solution systematically process sensitive personal data or do profiling?11)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.20",
+          "text": "Do we have a sufficient legal basis for processing personal data (where legally required)?12)",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.21",
+          "text": "Are we using personal data only for one of its original purposes (or one that had to be expected)?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.22",
+          "text": "Do we keep personal data in connection with the solution only for as long as we need it?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.23",
+          "text": "Have we limited our use of personal data to the minimum necessary for the purpose?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.24",
+          "text": "Do we limit access to our data within the solution on a \"need-to-know\"-basis?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.25",
+          "text": "Are we able to comply with data subject requests (e.g., access, correction, objection, deletion)?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.26",
+          "text": "Do we have measures in place ensuring an adequate data security and business continuity?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.27",
+          "text": "Do we inform others about our use of AI where this may be relevant for their interaction with us?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.28",
+          "text": "Could the public or those affected by our use of AI find it unfair or objectionable?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.29",
+          "text": "Do we have measures to avoid or deal with erroneous or other problematic output (e.g., bias)?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.30",
+          "text": "Is our AI solution tested extensively prior to its use, including against adversarial use?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.31",
+          "text": "Could our use of AI cause unintended repercussions for others (damage, discrimination, etc.)?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.32",
+          "text": "Could our use of AI be considered being based on exploiting vulnerabilities of individuals?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.33",
+          "text": "Do we have human oversight wherever our AI solution could take or influence key decisions?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.34",
+          "text": "Are we using a widely recognized, quality AI model with behavior we in principle understand?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.35",
+          "text": "Could our use of AI mislead or deceive anyone?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.36",
+          "text": "Do we have measures to detect undesired behavior of our AI solution, to log it and react to it?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.37",
+          "text": "Does our use of AI respect the dignity and individual autonomy of those affected by it?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.38",
+          "text": "Are the users of our AI solution be instructed, trained and monitored in its proper use?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.39",
+          "text": "Do we foresee any other uncontrolled issue in connection with our use of AI?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.40",
+          "text": "For how many years do you believe will these answers remain more or less valid?",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.01",
+          "text": "Will we be extensively processing sensitive personal data11)?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.02",
+          "text": "Will we be systematically monitoring public areas on a large scale?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.03",
+          "text": "Is there a systematic, extensive evaluation of personal aspects of individuals based on AI or otherwise automated, which may have a legal or otherwise significant negative impact on these individuals?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.04",
+          "text": "Could wrong (including biased) output of the AI solution have a significant negative effect on individuals (not considering the measures we take to prevent this)?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.05",
+          "text": "Is the AI solution subject to an increased risk of attacks by third parties and could a successful attack have significant negative effects for individuals?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.06",
+          "text": "Is there another reason (including considering the above assessment) why the AI solution could provide for a high risk of negative effects for the individuals about whom we process data (not considering the mitigation measures we take)?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.07",
+          "text": "Why the processing is necessary and could not be done in a manner less intrustive and far-reaching for the persons affected:",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.08",
+          "text": "Unauthoritzed parties get access to their data (unplanned)",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.09",
+          "text": "Their data gets corrupted/modified (unplanned)",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.10",
+          "text": "Their data is lost (unplanned)",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.11",
+          "text": "Their data is processed for purposes not expected",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.12",
+          "text": "The processing results in incorrect/incomplete data",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.13",
+          "text": "The processing of their data is not transparent to them",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.14",
+          "text": "More data of them than necessary is obtained",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.15",
+          "text": "Their data is accessible by more people than necessary",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.16",
+          "text": "Their data is kept/processed for longer than necessary",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.17",
+          "text": "The affected persons are misidentified or mixed up",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.18",
+          "text": "The processing results in unplanned denial of service",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.19",
+          "text": "The processing otherwise results in a wrong decision",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.20",
+          "text": "The processing could be unfair in some cases",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.21",
+          "text": "Their right to be forgotten/opt-out cannot be fulfilled",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.22",
+          "text": "Their right to correct data cannot be fulfilled",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.23",
+          "text": "Their right of access their data cannot be fulfilled",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "6.01",
+          "text": "Recommendation based on Step 4:",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "6.02",
+          "text": "Results from above DPIA (if applicable):",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": "(see DPIA above)",
+          "options": []
+        },
+        {
+          "id": "6.03",
+          "text": "Comments or objections by 2nd Line:",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "6.03",
+          "text": "Comments or objections by others:",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "6.04",
+          "text": "Overall risk level:",
+          "step_id": "6",
+          "answer_type": "select",
+          "explanation": "(to be assessed by the application owner; please include this in the ROAIA)",
+          "options": [
+            "Low",
+            "Medium",
+            "High",
+            "Very high"
+          ]
+        },
+        {
+          "id": "6.05",
+          "text": "Decision on how to proceed:",
+          "step_id": "6",
+          "answer_type": "select",
+          "explanation": "(to be taken by the application owner)",
+          "options": [
+            "Proceed as planned",
+            "Proceed with conditions",
+            "Do not proceed",
+            "Further review required"
+          ]
+        },
+        {
+          "id": "6.06",
+          "text": "Comments by application owner:",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1)",
+          "text": "The term \"RAG\" refers to a technique called \"Retrieval Augmented Generation\" and does not qualify as \"training\" an AI model. Rather, the AI system is in a first step asked to analyze the request, then formulate the additional information it needs in the form of a search request and then performs the search. The results of the search will then be fed to the AI system for responding to the initial request. In other words, the original instruction is \"augmented\" with additional knowledge to use for answering it.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2)",
+          "text": "The term \"unsafe\" countries refers to countries that are not considered having an adequate level of statutory data protection (from the perspective of the EEA, CH and UK; for the EEA, the list of \"safe\" countries includes all EEA member states and the countries with an \"adequacy\" decision, which are listed here: https://vischerlnk.com/3StIhBp; for Switzerland, the list is in \"Anhang 1\" of the Data Protection Ordinance: https://vischerlnk.com/3SHGJFe).",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3)",
+          "text": "The term \"confidential data\" refers to either our own business secrets or business secrets of a 3rd party that we have received under an non-disclosure agreement or other confidentiality undertaking. The term \"legally protected data\" refers to content that is the intellectual property of a third party and has been licensed to us under certain conditions. We have to make sure that we comply with these conditions, including in particular when using such data as input to an AI system.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4)",
+          "text": "If you do not know the answer to this, you will have to ask your 2nd line functions that deal with this, for example, your legal department or the data protection officer. They may have to review these contracts etc. for you and let you know the answer you can include here.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5)",
+          "text": "This refers on the one hand to contractual measures, such as the conclusion of the EU Standard Contractual Clauses (EU SCC) with the party abroad (e.g., the provider), and on the other hand us checking whether there is any relevant risk of our data becoming subject to problematic lawful access by authorities in the country of the recipient. For \"safe\" countries (see footnote 2) this is not necessary. This is typically an issue you will have to check with your 2nd line, e.g., the DPO or legal department.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "6)",
+          "text": "If we want to use a provider for processing data that is subject to official or professional secrecy, additional precautions need to be taken. In particular, the provider contract will need special clauses (e.g., containing a \"defend your data\" provision and a proper confidentiality undertaking for the provider, its employees and for beyond the term of the contract). Providers often provide special amendments for this purpose upon request. Furthermore, technical and organizational measures will have to implemented to protect the data against both misuse and foreign lawful access. It may also be necessary to perform a foreign lawful access risk assessment (FLARA). You will have to ask your 2nd line to provide you guidance on this, unless you already know.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "7)",
+          "text": "The \"records of processing activities\" (ROPA) is an inventory list of all activities that involve processing personal data at the organisation. Depending on the organisation, it is a requirement under data protection law.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "8)",
+          "text": "Art. 50 EU AI Act contains various transparency obligations for both providers and deployers of AI systems that apply even if the AI system is not considered \"high-risk\" (and, thus, subject to separate obligations). They are listed in the table in the separate worksheet \"AI Act\" (towards to the end).",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "9)",
+          "text": "There are various reasons why organisations should or will want to log the use of the AI solution. First, data protection act may require audit trails to detect and track improper processing of personal data (e.g., Art. 4 Swiss Data Protection Ordinance). Second, the AI Act requires that high-risk AI systems log their activities (including input/output) and that deployers retain it for six months. Third, logging of input and output may be necessary for evidentiary purposes or because regulations require that companies document their activities and use of certain tools (namely for the purpose of regulatory investigations).",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "10)",
+          "text": "This refers to the content mentioned also in footnote 3), which is either business secrets of third parties or intellectual property of a third party. Here, the question aims at finding out whether we have made any commitments to those who have entrusted their business secrets or intellectual property to us under the expectation or condition that we will not use it for AI solutions such as the present one. That said, most contracts will not contain any such restrictions.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "11)",
+          "text": "With the term \"sensitive personal data\" we mean personal data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the processing of genetic data, biometric data for the purpose of uniquely identifying a natural person, data concerning health or data concerning a natural person’s sex life or sexual orientation, other personal data about the person's intimate sphere, personal data relating to criminal convictions and offences or related security measures as well as data on social security measures. These categories of personal data are subject to special protections under the GDPR and Swiss data protection law. The term \"profiling\" means any automated processing of personal data consisting of the use of personal data to evaluate certain personal aspects relating to a natural person, in particular to analyse or predict aspects concerning that natural person’s performance at work, economic situation, health, personal preferences, interests, reliability, behaviour, location or movements.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "12)",
+          "text": "A legal basis is only required under the GDPR or, in under Swiss law, where an institution is processing data in its capacity as a federal or cantonal authority (or, also under Swisslaw, if a processing activity is in breach of certain principles of data protection). Under the GDPR, a legal basis for processing normal data could be the need to perform a contract with the person at issue, its consent, a legal obligation or an overriding legitimate interest.",
+          "step_id": "6",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        }
+      ]
+    },
+    "gaira_comprehensive": {
+      "key": "gaira_comprehensive",
+      "title": "Generative AI Risk Assessment (GAIRA) – Comprehensive",
+      "version": "Version 7.7.2024 - with Data Protection Impact Assessment (DPIA) included",
+      "overview": "Instruction: Fill out the below fields with a description of the application at issue. Also include information about the personal data that may be processed by the application, unless you do not have any such personal data. The information you enter is for information purposes. It will allow those who need to check the compliance and assess the risks of your application to better understand what you are doing and why. At the end (in 1.18/1.19), please also make the selections that best fit the application with regard to the EU AI Act, if applicable (there is a separate worksheet that will help you determine the answers).",
+      "metadata_fields": [
+        {
+          "key": "company",
+          "label": "Company",
+          "example_value": "Bank ABC"
+        },
+        {
+          "key": "department",
+          "label": "Department",
+          "example_value": "Wealth Management"
+        },
+        {
+          "key": "application_owner",
+          "label": "Application owner",
+          "example_value": "Peter Parker"
+        },
+        {
+          "key": "status_and_date_of_risk_assessment",
+          "label": "Status and date of risk assessment",
+          "example_value": "In progress"
+        },
+        {
+          "key": "name_of_application",
+          "label": "Name of application",
+          "example_value": "Project Alpha"
+        },
+        {
+          "key": "scope_of_assessment_includes",
+          "label": "Scope of assessment includes",
+          "example_value": "The implementation and use of the system."
+        },
+        {
+          "key": "scope_of_assessment_does_not_include",
+          "label": "Scope of assessment does not include",
+          "example_value": "The underlying cloud infrastructure (i.e. our tenant), including its security"
+        },
+        {
+          "key": "data_protection_impact_assessment_(dpia)",
+          "label": "Data Protection Impact Assessment (DPIA)",
+          "example_value": "Yes, included in this assessment"
+        }
+      ],
+      "steps": [
+        {
+          "id": "1",
+          "title": "Description of Application",
+          "instruction": null
+        },
+        {
+          "id": "2",
+          "title": "Document Necessity and Proportionality (only required for DPIA purposes)",
+          "instruction": "This step 2 is only necessary if you have chosen to use this form to do a data protection impact assessment (DPIA). If this is the case, then you are required to provide 2-3 sentences as an answer to the two following questions. The two questions are similar. The first question focuses on why you pursue the application (and use AI) instead of a solution that goes less far in terms of processing personal data. The second questions focuses on whether you really only collect and use data that is necessary and limit the processing to what is necessary and relevant."
+        },
+        {
+          "id": "3",
+          "title": "Technical and Organizational Measures (to mitigate harm to the company and the individuals)",
+          "instruction": "This step 2 is only necessary if you have chosen to use this form to do a data protection impact assessment (DPIA). If this is the case, then you are required to provide 2-3 sentences as an answer to the two following questions. The two questions are similar. The first question focuses on why you pursue the application (and use AI) instead of a solution that goes less far in terms of processing personal data. The second questions focuses on whether you really only collect and use data that is necessary and limit the processing to what is necessary and relevant."
+        },
+        {
+          "id": "4",
+          "title": "Risk Assessment (for both the company and the individuals)",
+          "instruction": "This step 3 is about you creating a list of all the technical and organizational measures that will contribute to ensuring the security, accuracy, fairness and other relevant aspects of compliance with laws and other expectations and - this is the ultimate goal - prevent or mitigate harm to the company and the individuals affected by your application. These measures can include things such as contracts with providers, instructions, consent from individuals affected, quality control measures, restrictions on use, monitoring, training, privacy notices, etc. For every measure, select the appropriate status and provide additional information to understand how the measure is or will be implemented, by whom and when. This will allow the reader to understand what has only been intended or planned, and what is already in place. Also indicate measures that you have considered, but decided not to implement and why. Do not worry if you do not have many ideas of what measures you could implement. When you will be completing the risk assessment in Step 4, you will most likely come up with more measures. If that happens, please also enter them in the below table."
+        },
+        {
+          "id": "5",
+          "title": "Conclusion",
+          "instruction": "The below tables contain the values that can be selected in the above risk assessment table. You can change the text (doing so will not automatically change selections you have already made above). The values behind the text will be used to calculate the risk levels. Ultimately, the maximum risk is always 16 (4 x 4). The colored charts below indicate the color code used in the above table. You can modify the threshold for the color turning yellow (= problematic). For the DPIA, you can define what is considered a medium and high risk (which is relevant for the overall assessment)."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1.01",
+          "text": "Area in which the application is to be used:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.02",
+          "text": "What is planned:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.03",
+          "text": "Interests pursued:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.04",
+          "text": "GenAI techniques to be used (incl. model):",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.05",
+          "text": "Providers involved and their roles:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.06",
+          "text": "Description of input data:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.07",
+          "text": "Description of output data:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.08",
+          "text": "Period of time and frequency of use:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.09",
+          "text": "Training or fine-tuning of the AI model, RAG1:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.10",
+          "text": "Categories of data subjects, if any:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.11",
+          "text": "Categories of personal data, if any:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.12",
+          "text": "Other persons or groups that may be affected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.13",
+          "text": "Measures for human oversight:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.14",
+          "text": "Measures for handling issues detected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.15",
+          "text": "Project plan:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.16",
+          "text": "Other aspects:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.17",
+          "text": "The positive effects expected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.18",
+          "text": "Category of AI system/practice as per EU AI Act*:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.19",
+          "text": "Role(s) of Company as per EU AI Act*:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.01",
+          "text": "Why the data processing is necessary or there is no less intrusive approach from the point of view of the data subjects:",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.02",
+          "text": "Why data processing is adheres to data minimization, is limited in time to what is necessary, and otherwise proportionate:",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.01",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Existing contract",
+          "options": []
+        },
+        {
+          "id": "3.02",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Existing contract",
+          "options": []
+        },
+        {
+          "id": "3.03",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Existing contract",
+          "options": []
+        },
+        {
+          "id": "3.04",
+          "text": "DP, IP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Negotiate with CloudCo",
+          "options": []
+        },
+        {
+          "id": "3.05",
+          "text": "DP, IP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Submit form (approval process)",
+          "options": []
+        },
+        {
+          "id": "3.06",
+          "text": "DP, IP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Submit form (approval process)",
+          "options": []
+        },
+        {
+          "id": "3.07",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Settings check",
+          "options": []
+        },
+        {
+          "id": "3.08",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "The bank so far has an e-mail confirming that the LLM will be running in Switzerland, but there is no contractual commitment; negotiate with CloudCo",
+          "options": []
+        },
+        {
+          "id": "3.09",
+          "text": "IP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "It is unrealistic to get such indemnities.",
+          "options": []
+        },
+        {
+          "id": "3.10",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "A consent declaration proposal has been submitted to the app owner",
+          "options": []
+        },
+        {
+          "id": "3.11",
+          "text": "DP, Ethics",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Still to check the existing PN",
+          "options": []
+        },
+        {
+          "id": "3.12",
+          "text": "DP, General, Ethics",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "To be implemented with a policy and corresponding training",
+          "options": []
+        },
+        {
+          "id": "3.13",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.14",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.15",
+          "text": "DP, Ethics, General, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "Test clients have already been selected and agree to participate",
+          "options": []
+        },
+        {
+          "id": "3.16",
+          "text": "DP, Ethics, General, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "To be implemented with a policy and corresponding training",
+          "options": []
+        },
+        {
+          "id": "3.17",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.18",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": "This has basically already been ensured when the CloudCo tenant has been set up.",
+          "options": []
+        },
+        {
+          "id": "3.19",
+          "text": "Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.01",
+          "text": "Ethics",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.02",
+          "text": "DP, Ethics",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- Deterioriation of customer relationship\n- DP claims by third parties",
+          "options": []
+        },
+        {
+          "id": "4.03",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- Deterioriation of customer relationship",
+          "options": []
+        },
+        {
+          "id": "4.03",
+          "text": "DP, Ethics, General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- Deterioriation of customer relationship",
+          "options": []
+        },
+        {
+          "id": "4.04",
+          "text": "DP, Ethics, General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- Deterioriation of customer relationship",
+          "options": []
+        },
+        {
+          "id": "4.05",
+          "text": "DP, General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.06",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.07",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.08",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Significant additional costs\n- Abort the project",
+          "options": []
+        },
+        {
+          "id": "4.09",
+          "text": "General, Quality",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Costs for the project\n- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.10",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Costs for the project\n- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.11",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.12",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Costs for the project\n- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.13",
+          "text": "IP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Solution can no longer be used\n- We are held liable for the infringement",
+          "options": []
+        },
+        {
+          "id": "4.14",
+          "text": "Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Solution can no longer be used\n- We are held liable for the infringement",
+          "options": []
+        },
+        {
+          "id": "4.15",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Solution can no longer be used\n- We are held liable for the infringement",
+          "options": []
+        },
+        {
+          "id": "4.16",
+          "text": "IP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.17",
+          "text": "Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.18",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.19",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.20",
+          "text": "IP, Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.21",
+          "text": "DP, General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- We lose control of our secrets or IP\n- We are held liable for the infringement\n- Breach of banking secrecy",
+          "options": []
+        },
+        {
+          "id": "4.22",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.23",
+          "text": "Quality",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.24",
+          "text": "Quality, Ethics",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Additional costs",
+          "options": []
+        },
+        {
+          "id": "4.25",
+          "text": "Quality, General, Ethics",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.26",
+          "text": "Quality, Ethics",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Additional costs",
+          "options": []
+        },
+        {
+          "id": "4.27",
+          "text": "Quality",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Additional costs for readjusting\n- There may be more errors and more need for manual intervention\n- However, the models usually get better over time",
+          "options": []
+        },
+        {
+          "id": "4.28",
+          "text": "Quality",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Additional costs for readjusting\n- There may be more errors and more need for manual intervention",
+          "options": []
+        },
+        {
+          "id": "4.29",
+          "text": "IP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Civil claims (but our client may also be responsible)\n- Reputational issues\n- Criminal complaint",
+          "options": []
+        },
+        {
+          "id": "4.30",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Civil claims (but our client may also be responsible)\n- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.31",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- The output has to be corrected manually\n- Additional work",
+          "options": []
+        },
+        {
+          "id": "4.32",
+          "text": "Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Criminal complaint\n- Civil claims\n- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.33",
+          "text": "Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Loss of control (potentially)",
+          "options": []
+        },
+        {
+          "id": "4.34",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Service terminated, with additional costs as a consequence",
+          "options": []
+        },
+        {
+          "id": "4.35",
+          "text": "Ethics",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- Civil claims for DP infringement",
+          "options": []
+        },
+        {
+          "id": "4.36",
+          "text": "DP, Quality",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- May influence the relationship with the client in a positive or negative manner for the bank\n- This is unlikely to be detected, except in case of an access request\n- If the app wrongly detects a potential for net new assets, this may cause reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.37",
+          "text": "DP, Quality",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- May influence the relationship with the client in a positive or negative manner for the bank\n- This is unlikely to be detected, except in case of an access request",
+          "options": []
+        },
+        {
+          "id": "4.38",
+          "text": "DP, Quality",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- May influence the relationship with the client in a positive or negative manner for the bank",
+          "options": []
+        },
+        {
+          "id": "4.39",
+          "text": "DP, General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues if a client finds out by way of an access request",
+          "options": []
+        },
+        {
+          "id": "4.40",
+          "text": "IP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.41",
+          "text": "Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.42",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- Civil claims",
+          "options": []
+        },
+        {
+          "id": "4.43",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- Civil claims",
+          "options": []
+        },
+        {
+          "id": "4.44",
+          "text": "DP, General, Ethics",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.45",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.46",
+          "text": "DP, Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- Claims for breach of data protection and professional secrecy\n- Financial claims of customers\n- DP authority intervention",
+          "options": []
+        },
+        {
+          "id": "4.47",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- DP authority intervention",
+          "options": []
+        },
+        {
+          "id": "4.48",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Reputational issues\n- We could no longer serve our customers\n- DP authority intervention",
+          "options": []
+        },
+        {
+          "id": "4.49",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.50",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.51",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.52",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Claims for breach of data protection\n- Fines for breach of data protection\n- Reputational issues\n- DP authority intervention",
+          "options": []
+        },
+        {
+          "id": "4.53",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.54",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.55",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.56",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.57",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.58",
+          "text": "DP, Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- DP authority intervention",
+          "options": []
+        },
+        {
+          "id": "4.59",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Civil claims for breach of data protection and banking secrecy\n- Criminal complaint for breach of banking secrecy\n- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.60",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.61",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- DP authority intervention\n- We may have to change or give up the app",
+          "options": []
+        },
+        {
+          "id": "4.62",
+          "text": "DP, Secrecy",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- DP authority intervention\n- Financial markets authority intervention\n- Civil claims for breach of data protection and banking secrecy\n- We may have to change or give up the app",
+          "options": []
+        },
+        {
+          "id": "4.63",
+          "text": "DP",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.64",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- We may have to change or give up the app\n- Reputational issues",
+          "options": []
+        },
+        {
+          "id": "4.65",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Financial markets authority intervention\n- We may have to change or give up the app",
+          "options": []
+        },
+        {
+          "id": "4.66",
+          "text": "General",
+          "step_id": "4",
+          "answer_type": "text",
+          "explanation": "- Additional costs for switching\n- We may have to change or give up the app",
+          "options": []
+        },
+        {
+          "id": "5.01",
+          "text": "Comments by Legal:",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.02",
+          "text": "Comments by DPO:",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.03",
+          "text": "Comments by Compliance:",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.04",
+          "text": "Comments by others:",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.05",
+          "text": "Do high risks remain for data subjects?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": "(automatic value, for DPIA purposes; if the remaining risk is high, the data protection authority must be consulted)",
+          "options": []
+        },
+        {
+          "id": "5.06",
+          "text": "Overall risk level:",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": "(to be assessed by the application owner; please include this in the ROAIA)",
+          "options": []
+        },
+        {
+          "id": "5.07",
+          "text": "Are all residual risks acceptable?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.08",
+          "text": "Have all residual risks been accepted?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.09",
+          "text": "Comments by application owner:",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.10",
+          "text": "Steps still to do:",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        }
+      ]
+    },
+    "ai_act_check": {
+      "key": "ai_act_check",
+      "title": "Is your application subject to the EU AI Act?",
+      "version": "Version 25.8.2024 (for AI Act source data see separate worksheet)",
+      "overview": "Does the high-risk AI system nevertheless (i) pose no significant risk of harm (e.g., narrow procedural task, quality control of human activities or completed decision making) and (ii) does it not perform any profiling?",
+      "metadata_fields": [
+        {
+          "key": "company",
+          "label": "Company",
+          "example_value": "Bank ABC"
+        },
+        {
+          "key": "department",
+          "label": "Department",
+          "example_value": "Wealth Management"
+        },
+        {
+          "key": "application_owner",
+          "label": "Application owner",
+          "example_value": "Peter Parker"
+        },
+        {
+          "key": "status_and_date_of_risk_assessment",
+          "label": "Status and date of risk assessment",
+          "example_value": "In progress"
+        },
+        {
+          "key": "name_of_application",
+          "label": "Name of application",
+          "example_value": "Project Alpha"
+        },
+        {
+          "key": "scope_of_assessment_includes",
+          "label": "Scope of assessment includes",
+          "example_value": "The implementation and use of the system."
+        },
+        {
+          "key": "scope_of_assessment_does_not_include",
+          "label": "Scope of assessment does not include",
+          "example_value": "The underlying cloud infrastructure (i.e. our tenant), including its security"
+        }
+      ],
+      "steps": [
+        {
+          "id": "1",
+          "title": "The AI System or AI model",
+          "instruction": null
+        },
+        {
+          "id": "2",
+          "title": "Whether you are subject to the AI Act as a \"provider\" or in a similar role",
+          "instruction": null
+        },
+        {
+          "id": "3",
+          "title": "Whether you are subject to the AI Act as a \"deployer\"",
+          "instruction": null
+        },
+        {
+          "id": "4",
+          "title": "Summary",
+          "instruction": null
+        },
+        {
+          "id": "5",
+          "title": "Obligations under the AI Act",
+          "instruction": null
+        }
+      ],
+      "questions": [
+        {
+          "id": "1.01",
+          "text": "Do you make use of an automated component (e.g., program, IC) that generates relevant output based on input at least partially autonomous (i.e. based on rules not defined by human beings)?",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.02",
+          "text": "Could your application be qualified as doing at least one of these activities listed in Art. 5 AI Act?",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.03",
+          "text": "Could your application be qualified as doing at least one of these activities listed in Art. 6 AI Act?",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.05",
+          "text": "Are you creating an AI model  that displays significant generality and is capable of competently performing a wide range of distinct tasks that can be integrated into a variety of downstream systems or applications?",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.01",
+          "text": "Will you have developped (yourself or through a third-party) the AI system or model, partially or fully?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.02",
+          "text": "Will you be the first one placing the AI system or the general-purpose AI model on the EU market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.03",
+          "text": "Will you be the first one putting the AI system into service by yourself or by someone else in the EU?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.04",
+          "text": "Will you do either of the two foregoing activities under your own name or trademark?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.05",
+          "text": "Will you put your name or trademark on the high-risk AI system that is already on the EU market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.06",
+          "text": "Will you make substantial modifications to the high-risk AI system that is already on the EU market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.07",
+          "text": "Will you be using the AI system for a high-risk activity (as above), even though the AI system was neither intended to be used for such activity by the provider of the system nor itself is high-risk?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.08",
+          "text": "Is the AI system a safety component of your product, and will you (ii) place it on the EU market with your product under your own name or trademark or (ii) put it into service in the EU under your own name or trademarkt after the product has been placed on the market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.09",
+          "text": "Although you are not a provider, will you still make the AI system available on the EU market?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "2.10",
+          "text": "Are you established in the EU and will you place the AI system on the EU market under the name or trademark of a third-party outside the EU?",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.01",
+          "text": "Will you be using the AI system under your own authority?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.02",
+          "text": "Are you established or located in the EU?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "3.03",
+          "text": "Is the output produced by the AI system intended to be used in the EU?",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.01",
+          "text": "An AI system that interacts directly with individuals, except for those systems authorised by law to detect, prevent, investigate and prosecute criminal offences?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.02",
+          "text": "An AI system that generates synthetic audio, image, video or text content?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.03",
+          "text": "An AI system that infers or detects emotions and intents or does biometric categorization, except for those systems that are permitted by law to detect, prevent and investigate criminal offences?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.04",
+          "text": "An AI system that generates \"deep fakes\"?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.05",
+          "text": "AI generation or manipulation of text which is published for the purpose of informing the public?",
+          "step_id": "5",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        }
+      ]
+    },
+    "ai_act_four_questions": {
+      "key": "ai_act_four_questions",
+      "title": "ai_act_four_questions",
+      "version": null,
+      "overview": "AI systems evaluating or classifying people based on social behavior or personal characteristics, leading to detrimental or unfavorable treatment in unrelated contexts or disproportionate to their behavior.",
+      "metadata_fields": [],
+      "steps": [],
+      "questions": []
+    },
+    "compliance_check": {
+      "key": "compliance_check",
+      "title": "Generative AI – Compliance Check",
+      "version": "Version 7.7.2024 - with Data Protection Impact Assessment (DPIA) included",
+      "overview": "Instruction: This step 2 serves the purpose of identifying the areas of compliance and risk that may be relevant for your application. For example, if your application may process personal data, it may have to comply with data protection law. Therefore, go through the below table and select for each item whether you have to reasonably assume that the statement could apply or not to your application. If you chose \"No\", please provide a comment why you do not believe that the statement applies to your application, unless the reason is obvious. The selection you make will impact the below list of compliance requirements in step 3.",
+      "metadata_fields": [
+        {
+          "key": "company",
+          "label": "Company",
+          "example_value": "Bank ABC"
+        },
+        {
+          "key": "department",
+          "label": "Department",
+          "example_value": "Wealth Management"
+        },
+        {
+          "key": "application_owner",
+          "label": "Application owner",
+          "example_value": "Peter Parker"
+        },
+        {
+          "key": "status_and_date_of_compliance_assessment",
+          "label": "Status and date of compliance assessment",
+          "example_value": "In progress"
+        },
+        {
+          "key": "compliance_assessment_done_by_(with_the_help_of)",
+          "label": "Compliance assessment done by (with the help of)",
+          "example_value": "Linda Longbottom"
+        },
+        {
+          "key": "name_of_application",
+          "label": "Name of application",
+          "example_value": "Project Alpha"
+        },
+        {
+          "key": "scope_of_assessment_includes",
+          "label": "Scope of assessment includes",
+          "example_value": "The implementation and use of the system."
+        },
+        {
+          "key": "scope_of_assessment_does_not_include",
+          "label": "Scope of assessment does not include",
+          "example_value": "The underlying cloud infrastructure (i.e. our tenant), including its security"
+        }
+      ],
+      "steps": [
+        {
+          "id": "1",
+          "title": "Description of Application (values taken from main page)",
+          "instruction": null
+        },
+        {
+          "id": "2",
+          "title": "Determine Relevant Compliance & Risk Areas",
+          "instruction": null
+        },
+        {
+          "id": "3",
+          "title": "Basic Compliance Check",
+          "instruction": "This step 3 is the compliance check. It is only a basic compliance check to give you an indication of areas where you may have an issue and will have to a deep dive. For each requirement, choose whether you believe that it is fulfilled (or \"covered\"). If you conclude that this is not yet the case, but can be achieved with a further measure (e.g., conclusion of a contract, issuing a policy), then include the measure in step 2 of the main GAIRA worksheet. Until that has happened, select \"Not yet\" as a value. If a requirement is and will not be fulfilled, select \"No\". You can add further comments. Column G is \"only\" used to indicate which requirement is likely relevant or not for your application, based on the selection made in step 2 above. You have two options: You can use the below selector to have those requirements faded out that are likely not relevant to your application. Alternatively, you can use the \"autofilter\" feature at the top of the table of column G and have only those lines showed that contain a \"Likely\". Be sure to reset the filter once you make changes in step 2."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1.01",
+          "text": "Area in which the application is to be used:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.02",
+          "text": "What is planned:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.03",
+          "text": "Interests pursued:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.04",
+          "text": "GenAI techniques to be used (incl. model):",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.05",
+          "text": "Providers involved and their roles:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.06",
+          "text": "Description of input data:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.07",
+          "text": "Description of output data:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.08",
+          "text": "Period of time and frequency of use:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.09",
+          "text": "Training or fine-tuning:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.10",
+          "text": "Categories of data subjects, if any:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.11",
+          "text": "Categories of personal data, if any:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.12",
+          "text": "Other persons or groups that may be affected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.13",
+          "text": "Measures for human oversight:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.14",
+          "text": "Measures for handling issues detected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.15",
+          "text": "Project plan:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.16",
+          "text": "Other aspects:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.17",
+          "text": "The positive effects expected:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "1.18",
+          "text": "Category of AI system/practice as per EU AI Act*:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": "0",
+          "options": []
+        },
+        {
+          "id": "1.19",
+          "text": "Role of Company as perEU AI Act*:",
+          "step_id": "1",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.01",
+          "text": "DP",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "Clients, third parties mentioned by clients",
+          "options": []
+        },
+        {
+          "id": "4.02",
+          "text": "DP",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.03",
+          "text": "DP, Ethics",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.04",
+          "text": "Secrecy",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "CID",
+          "options": []
+        },
+        {
+          "id": "4.05",
+          "text": "Secrecy",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "Some internal remarks may be included in e-mails.",
+          "options": []
+        },
+        {
+          "id": "4.06",
+          "text": "IP",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "Content provided by customer",
+          "options": []
+        },
+        {
+          "id": "4.07",
+          "text": "IP",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.08",
+          "text": "General",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "Wealth management clients",
+          "options": []
+        },
+        {
+          "id": "4.09",
+          "text": "General",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.10",
+          "text": "General",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.11",
+          "text": "General",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.12",
+          "text": "General",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "4.13",
+          "text": "General, Ethics",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "Rules on outsourcing",
+          "options": []
+        },
+        {
+          "id": "4.14",
+          "text": "General",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "Financial markets regulations on outsourcing and oprisk",
+          "options": []
+        },
+        {
+          "id": "4.15",
+          "text": "Quality",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "We can also run our business without the app",
+          "options": []
+        },
+        {
+          "id": "4.16",
+          "text": "Ethics",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": "If there is erroneous information that is not detected",
+          "options": []
+        },
+        {
+          "id": "4.17",
+          "text": "Ethics",
+          "step_id": "2",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.01",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.02",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.03",
+          "text": "DP, Ethics",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.04",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.05",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.06",
+          "text": "DP, General, Quality",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.07",
+          "text": "DP, General, Quality",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.08",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.09",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.10",
+          "text": "DP, Secrecy, General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.11",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.12",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.13",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.14",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.15",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.16",
+          "text": "Ethics, General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.17",
+          "text": "DP, Ethics, General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.18",
+          "text": "Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.19",
+          "text": "DP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.20",
+          "text": "Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.21",
+          "text": "DP, IP, Secrecy",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.22",
+          "text": "DP",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.23",
+          "text": "General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.24",
+          "text": "DP, Secrecy, IP, General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.25",
+          "text": "DP, Secrecy, IP, General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.26",
+          "text": "DP, Secrecy, IP, General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.27",
+          "text": "DP, General, Quality",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.28",
+          "text": "IP, General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.29",
+          "text": "General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.30",
+          "text": "General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.31",
+          "text": "General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.32",
+          "text": "General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.33",
+          "text": "General, Quality",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.34",
+          "text": "DP, Secrecy, IP, General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.35",
+          "text": "General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.36",
+          "text": "General, Ethics",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.37",
+          "text": "General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.38",
+          "text": "DP, General, Quality, Ethics",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.39",
+          "text": "Ethics",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        },
+        {
+          "id": "5.40",
+          "text": "General",
+          "step_id": "3",
+          "answer_type": "text",
+          "explanation": null,
+          "options": []
+        }
+      ]
+    },
+    "roaia": {
+      "key": "roaia",
+      "title": "Records of AI Activities (ROAIA)",
+      "columns": [
+        "ID",
+        "AI System",
+        "Application/use case",
+        "Purpose",
+        "Owner",
+        "Audience",
+        "AI Product/Provider",
+        "Technology used (incl. AI model)",
+        "EU AI Act",
+        "Compl.-check",
+        "DPIA",
+        "GAIRA",
+        "Risk Level",
+        "Deployed",
+        "Next assessment",
+        "Drop-down selection for Column \"AI Act\":"
+      ]
+    }
+  }
+}

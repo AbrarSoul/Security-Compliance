@@ -187,6 +187,23 @@ Open any execution to see its prompts, outputs, guard actions, and reasons.
 
 ---
 
+## 4.13 GAIRA (AI risk assessment)
+
+**Why:** Before you deploy an AI use case, you need a structured governance assessment — not just a dataset scan. GAIRA (Generative AI Risk Assessment) covers organizational AI risk, EU AI Act classification, controls, and DPIA-style questions.
+
+**What you can do today (API):**
+
+1. Register an **AI application** (ROAIA inventory entry).
+2. Run **AI Risk Levels** triage → system recommends GAIRA Light or Comprehensive.
+3. Complete a **GAIRA Light** (or Comprehensive) assessment with auto-prefill from linked scans and models.
+4. **Submit** the assessment → updates the application's risk level and GAIRA status.
+
+**Who:** Users and admins can create and submit assessments (`gaira:manage`). Auditors can read submitted records (`gaira:read`).
+
+> Full walkthrough, API examples, scoring rules, and glossary: **[`GAIRA_USER_GUIDE.md`](GAIRA_USER_GUIDE.md)**
+
+---
+
 ## 5. The end-to-end happy path (typical day)
 
 ```
@@ -247,12 +264,15 @@ Risk score colors follow the same scale:
 - **Posture score** — single 0-100 gap-analysis score; higher = healthier compliance posture.
 - **Severity** — `critical` > `high` > `medium` > `low`.
 - **Session** — a real-time monitoring window grouping prompts/outputs of one execution.
+- **GAIRA** — Generative AI Risk Assessment framework for project-level AI governance. See [`GAIRA_USER_GUIDE.md`](GAIRA_USER_GUIDE.md).
+- **ROAIA** — Records of AI Activities; inventory of registered AI applications in ComplianceGuard.
 
 ---
 
 ## 9. Where to go next
 
 - New developer? Read [`backend/README.md`](backend/README.md) for setup and API endpoints.
+- **GAIRA / AI risk assessment?** Read [`GAIRA_USER_GUIDE.md`](GAIRA_USER_GUIDE.md).
 - Working on monitoring / guard / analytics? Read [`backend/docs/SPRINT3_TECHNICAL.md`](backend/docs/SPRINT3_TECHNICAL.md).
 - API reference: `http://localhost:8000/docs` (when the backend is running).
 
