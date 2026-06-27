@@ -4,7 +4,7 @@ import json
 from typing import Any
 
 from app.core.config import get_settings
-from app.services.scanner.types import ColumnSample
+from app.services.scanner.types import CellValue, ColumnSample
 
 settings = get_settings()
 
@@ -25,12 +25,19 @@ def load_csv_columns(content: bytes, max_rows: int) -> list[ColumnSample]:
     header = [col.strip() or f"column_{i}" for i, col in enumerate(rows[0])]
     data_rows = rows[1 : max_rows + 1] if len(rows) > 1 else []
 
-    columns: dict[str, list[str]] = {name: [] for name in header}
-    for row in data_rows:
+    columns: dict[str, list[CellValue]] = {name: [] for name in header}
+    for row_offset, row in enumerate(data_rows):
+        # Row 1 is the header; first data row is row 2 (spreadsheet-style).
+        row_index = row_offset + 2
         for i, name in enumerate(header):
-            columns[name].append(_normalize_cell(row[i] if i < len(row) else ""))
+            columns[name].append(
+                CellValue(index=row_index, value=_normalize_cell(row[i] if i < len(row) else ""))
+            )
 
-    return [ColumnSample(name=n, values=v) for n, v in columns.items()]
+    return [
+        ColumnSample(name=n, cells=v, location_type="row")
+        for n, v in columns.items()
+    ]
 
 
 def load_json_columns(content: bytes, max_rows: int) -> list[ColumnSample]:
@@ -40,22 +47,46 @@ def load_json_columns(content: bytes, max_rows: int) -> list[ColumnSample]:
         keys: set[str] = set()
         for item in data[:max_rows]:
             keys.update(item.keys())
-        columns: dict[str, list[str]] = {k: [] for k in sorted(keys)}
-        for item in data[:max_rows]:
+        columns: dict[str, list[CellValue]] = {k: [] for k in sorted(keys)}
+        for record_idx, item in enumerate(data[:max_rows], start=1):
             for key in columns:
-                columns[key].append(_normalize_cell(item.get(key)))
-        return [ColumnSample(name=n, values=v) for n, v in columns.items()]
+                columns[key].append(
+                    CellValue(index=record_idx, value=_normalize_cell(item.get(key)))
+                )
+        return [
+            ColumnSample(name=n, cells=v, location_type="record")
+            for n, v in columns.items()
+        ]
 
     if isinstance(data, dict):
-        return [ColumnSample(name=k, values=[_normalize_cell(v)]) for k, v in data.items()]
+        return [
+            ColumnSample(
+                name=k,
+                cells=[CellValue(index=1, value=_normalize_cell(v))],
+                location_type="field",
+            )
+            for k, v in data.items()
+        ]
 
-    return [ColumnSample(name="value", values=[_normalize_cell(data)])]
+    return [
+        ColumnSample(
+            name="value",
+            cells=[CellValue(index=1, value=_normalize_cell(data))],
+            location_type="field",
+        )
+    ]
 
 
 def load_txt_columns(content: bytes, max_rows: int) -> list[ColumnSample]:
     text = content.decode("utf-8", errors="replace")
-    lines = text.splitlines()[:max_rows]
-    return [ColumnSample(name="line", values=[ln.strip() for ln in lines if ln.strip()])]
+    cells: list[CellValue] = []
+    for line_num, line in enumerate(text.splitlines(), start=1):
+        if line_num > max_rows:
+            break
+        stripped = line.strip()
+        if stripped:
+            cells.append(CellValue(index=line_num, value=stripped))
+    return [ColumnSample(name="line", cells=cells, location_type="line")]
 
 
 def load_dataset_columns(file_type: str, content: bytes) -> list[ColumnSample]:

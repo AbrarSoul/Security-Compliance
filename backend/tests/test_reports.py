@@ -2,10 +2,14 @@ import json
 import uuid
 from datetime import UTC, datetime
 from types import SimpleNamespace
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
 
 from app.schemas.reports import ReportDetailResponse
 from app.services.reports.json_builder import build_report_json
 from app.services.reports.pdf_builder import build_report_pdf
+from app.services.reports.report_service import ReportService
 
 
 def _make_scan():
@@ -99,6 +103,39 @@ def test_build_report_pdf_returns_pdf_bytes():
     pdf = build_report_pdf(data)
     assert pdf[:4] == b"%PDF"
     assert len(pdf) > 500
+
+
+@pytest.mark.asyncio
+async def test_export_report_pdf_regenerates_when_storage_missing():
+    report_id = uuid.uuid4()
+    user_id = uuid.uuid4()
+    summary = {
+        "report_id": str(report_id),
+        "executive_summary": {"risk_score": 45, "compliance_status": "risky"},
+        "detected_issues": [],
+        "recommendations": [],
+        "compliance_score": {"risk_score": 45},
+    }
+    report = SimpleNamespace(
+        id=report_id,
+        pdf_storage_key=f"{user_id}/reports/{report_id}.pdf",
+        summary_json=summary,
+    )
+    storage = MagicMock()
+    storage.read = AsyncMock(side_effect=FileNotFoundError("missing"))
+    storage.save = AsyncMock()
+
+    service = ReportService(db=MagicMock(), storage=storage)
+    service.get_report = AsyncMock(return_value=report)
+
+    content, filename, media_type = await service.export_report(
+        report_id, user_id, "pdf"
+    )
+
+    assert content[:4] == b"%PDF"
+    assert filename == f"compliance-report-{report_id}.pdf"
+    assert media_type == "application/pdf"
+    storage.save.assert_awaited_once_with(report.pdf_storage_key, content)
 
 
 def test_build_report_pdf_empty_findings():

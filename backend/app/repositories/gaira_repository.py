@@ -42,12 +42,16 @@ class GairaRepository:
         count_q = select(func.count()).select_from(base.subquery())
         total = int((await self.db.execute(count_q)).scalar_one())
         result = await self.db.execute(
-            base.order_by(AIApplication.updated_at.desc()).limit(limit).offset(offset)
+            base.options(selectinload(AIApplication.assessments))
+            .order_by(AIApplication.updated_at.desc())
+            .limit(limit)
+            .offset(offset)
         )
         return list(result.scalars().all()), total
 
     async def update_application(self, application: AIApplication) -> AIApplication:
         await self.db.flush()
+        await self.db.refresh(application)
         return application
 
     async def create_assessment(self, assessment: GairaAssessment) -> GairaAssessment:
@@ -95,4 +99,5 @@ class GairaRepository:
 
     async def update_assessment(self, assessment: GairaAssessment) -> GairaAssessment:
         await self.db.flush()
+        await self.db.refresh(assessment)
         return assessment

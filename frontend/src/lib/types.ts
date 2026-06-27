@@ -63,14 +63,25 @@ export interface Recommendation {
   created_at: string;
 }
 
+export interface FindingContribution {
+  finding_type: string;
+  severity: string;
+  column_name: string | null;
+  base_points: number;
+  density_points: number;
+  type_weight_points: number;
+  total_points: number;
+  match_rate: number;
+}
+
 export interface ComplianceScore {
   risk_score: number;
   compliance_status: string;
   classification: string;
   highest_severity: string | null;
   total_findings: number;
-  contributions?: unknown[];
-  adjustments?: unknown[];
+  contributions?: FindingContribution[];
+  adjustments?: Record<string, unknown>[];
   thresholds_applied?: Record<string, number>;
 }
 

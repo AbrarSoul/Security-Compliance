@@ -103,7 +103,13 @@ function ModelsContent() {
       });
       setValidationResult(res);
     } catch (err) {
-      setFormError(err instanceof ApiError ? err.message : "Validation failed");
+      setFormError(
+        err instanceof ApiError
+          ? err.message
+          : err instanceof Error
+            ? err.message
+            : "Validation failed"
+      );
     } finally {
       setSaving(false);
     }

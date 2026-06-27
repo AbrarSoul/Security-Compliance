@@ -5,13 +5,17 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Card } from "@/components/ui/Card";
-import { ComplianceBadge, SeverityBadge } from "@/components/ui/Badge";
+import { ComplianceBadge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { RiskScoreGauge } from "@/components/scans/RiskScoreGauge";
+import { ScanExecutiveSummary } from "@/components/scans/ScanExecutiveSummary";
+import { ScanScoreBreakdown } from "@/components/scans/ScanScoreBreakdown";
+import { FindingCard } from "@/components/scans/FindingCard";
 import { StatCardSkeleton } from "@/components/ui/Skeleton";
 import { filesApi, reportsApi, scansApi, triggerDownload, ApiError } from "@/lib/api";
 import type { Scan, UploadedFile } from "@/lib/types";
+import { groupFindingsBySeverity, groupRecommendationsByPriority, riskBandLabel } from "@/lib/scanReport";
 import { formatDate, statusLabel } from "@/lib/utils";
 
 export default function ScanDetailPage() {
@@ -67,7 +71,7 @@ export default function ScanDetailPage() {
   if (loading) {
     return (
       <>
-        <Header title="Scan details" />
+        <Header title="Scan report" />
         <div className="page-container">
           <div className="grid gap-4 lg:grid-cols-3">
             <StatCardSkeleton />
@@ -83,7 +87,7 @@ export default function ScanDetailPage() {
   if (!scan) {
     return (
       <>
-        <Header title="Scan details" />
+        <Header title="Scan report" />
         <div className="page-container">
           <Alert variant="error">{error || "Scan not found"}</Alert>
         </div>
@@ -91,10 +95,15 @@ export default function ScanDetailPage() {
     );
   }
 
+  const findings = scan.findings ?? [];
+  const recommendations = scan.recommendations ?? [];
+  const findingsBySeverity = groupFindingsBySeverity(findings);
+  const recsByPriority = groupRecommendationsByPriority(recommendations);
+
   return (
     <>
       <Header
-        title="Scan details"
+        title="Scan report"
         subtitle={file?.original_name ?? `Scan ${scan.id.slice(0, 8)}`}
       />
       <div className="page-container animate-fade-in space-y-6">
@@ -107,10 +116,22 @@ export default function ScanDetailPage() {
 
         {error && <Alert variant="error">{error}</Alert>}
 
+        <Card title="Executive summary">
+          <ScanExecutiveSummary
+            complianceStatus={scan.compliance_status}
+            classification={scan.classification}
+            findingsCount={findings.length}
+            file={file}
+            startedAt={scan.started_at}
+            completedAt={scan.completed_at}
+          />
+        </Card>
+
         <div className="grid gap-6 lg:grid-cols-3">
           <Card title="Risk assessment">
             <div className="flex flex-col items-center py-4">
               <RiskScoreGauge score={scan.risk_score} />
+              <p className="mt-2 text-sm font-medium text-text-muted">{riskBandLabel(scan.risk_score)}</p>
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 <ComplianceBadge status={scan.compliance_status} />
                 {scan.classification && (
@@ -123,7 +144,7 @@ export default function ScanDetailPage() {
           </Card>
 
           <div className="lg:col-span-2">
-            <Card title="Scan information">
+            <Card title="Scan details">
               <dl className="grid gap-4 text-sm sm:grid-cols-2">
                 <Info label="File" value={file?.original_name ?? scan.file_id} />
                 <Info label="Status" value={statusLabel(scan.status)} />
@@ -132,8 +153,8 @@ export default function ScanDetailPage() {
                   label="Completed"
                   value={scan.completed_at ? formatDate(scan.completed_at) : "—"}
                 />
-                <Info label="Findings" value={String(scan.findings?.length ?? 0)} />
-                <Info label="Recommendations" value={String(scan.recommendations?.length ?? 0)} />
+                <Info label="Findings" value={String(findings.length)} />
+                <Info label="Recommendations" value={String(recommendations.length)} />
               </dl>
               {scan.status === "completed" && (
                 <div className="mt-6 flex flex-wrap gap-2 border-t border-border pt-6">
@@ -162,56 +183,74 @@ export default function ScanDetailPage() {
           </div>
         </div>
 
+        {scan.compliance_score && (
+          <Card title="Score breakdown">
+            <ScanScoreBreakdown score={scan.compliance_score} riskScore={scan.risk_score} />
+          </Card>
+        )}
+
         <div className="grid gap-6 lg:grid-cols-2">
           <Card title="Detected issues">
-            {!scan.findings?.length ? (
-              <p className="text-sm text-text-muted">No issues detected.</p>
+            {!findings.length ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-text-primary">No sensitive patterns found</p>
+                <p className="text-sm text-text-muted">
+                  The scanner did not detect credentials, API keys, contact information, or other
+                  regulated patterns in the analyzed sample rows.
+                </p>
+              </div>
             ) : (
-              <ul className="space-y-3">
-                {scan.findings.map((f) => (
-                  <li
-                    key={f.id}
-                    className="rounded-lg border border-border bg-background-tertiary/50 p-4 transition-colors hover:border-border hover:bg-surface"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold capitalize text-text-primary">
-                        {f.finding_type.replace(/_/g, " ")}
-                      </span>
-                      <SeverityBadge severity={f.severity} />
-                    </div>
-                    {f.column_name && (
-                      <p className="mt-1 text-sm text-text-muted">
-                        Column: <span className="font-mono">{f.column_name}</span>
-                      </p>
-                    )}
-                    <p className="mt-1 text-xs text-text-muted">
-                      {f.sample_count} matches
-                      {f.match_rate != null && ` · ${(f.match_rate * 100).toFixed(1)}% rate`}
+              <div className="space-y-6">
+                {Object.entries(findingsBySeverity).map(([severity, items]) => (
+                  <div key={severity}>
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                      {severity} severity ({items.length})
                     </p>
-                  </li>
+                    <ul className="space-y-3">
+                      {items.map((f) => (
+                        <FindingCard key={f.id} finding={f} />
+                      ))}
+                    </ul>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </Card>
 
           <Card title="Recommendations">
-            {!scan.recommendations?.length ? (
-              <p className="text-sm text-text-muted">No recommendations.</p>
+            {!recommendations.length ? (
+              <p className="text-sm text-text-muted">
+                No remediation steps required based on current findings.
+              </p>
             ) : (
-              <ul className="space-y-4">
-                {scan.recommendations.map((r) => (
-                  <li
-                    key={r.id}
-                    className="border-l-4 border-brand-500 bg-primary/10/30 py-2 pl-4 transition-colors hover:bg-primary/10/60"
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                      {r.priority} · {r.action_type.replace(/_/g, " ")}
+              <div className="space-y-6">
+                {Object.entries(recsByPriority).map(([priority, items]) => (
+                  <div key={priority}>
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                      {priority} priority ({items.length})
                     </p>
-                    <p className="mt-1 font-semibold text-text-primary">{r.title}</p>
-                    <p className="mt-1 text-sm text-text-muted">{r.description}</p>
-                  </li>
+                    <ul className="space-y-4">
+                      {items.map((r) => (
+                        <li
+                          key={r.id}
+                          className="border-l-4 border-brand-500 bg-primary/10/30 py-2 pl-4 transition-colors hover:bg-primary/10/60"
+                        >
+                          <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                            {r.action_type.replace(/_/g, " ")}
+                            {r.column_name && (
+                              <span className="ml-2 font-mono normal-case text-text-muted">
+                                → {r.column_name}
+                              </span>
+                            )}
+                          </p>
+                          <p className="mt-1 font-semibold text-text-primary">{r.title}</p>
+                          <p className="mt-1 text-sm text-text-muted">{r.description}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </Card>
         </div>

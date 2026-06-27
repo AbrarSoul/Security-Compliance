@@ -185,7 +185,8 @@ class ModelComplianceService:
         )
         await self.validations.create(validation)
         await self._audit_validation(user_id, validation, model)
-        return validation
+        reloaded = await self.validations.get_by_id(validation.id)
+        return reloaded if reloaded is not None else validation
 
     async def get_validation(
         self, validation_id: UUID, *, user_id: UUID

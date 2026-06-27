@@ -1,5 +1,6 @@
 from app.core.config import get_settings
 from app.services.scanner import patterns
+from app.services.scanner.location_evidence import collect_match_evidence
 from app.services.scanner.types import ColumnSample, DetectionResult
 
 settings = get_settings()
@@ -16,11 +17,11 @@ class PhoneDetector:
     name = "phone"
 
     def detect(self, column: ColumnSample) -> DetectionResult | None:
-        non_empty = [v for v in column.values if v]
+        non_empty = [c for c in column.cells if c.value]
         if not non_empty:
             return None
 
-        hits = sum(1 for v in non_empty if _is_phone(v))
+        hits = sum(1 for c in non_empty if _is_phone(c.value))
         rate = hits / len(non_empty)
         if rate < settings.scan_match_threshold:
             return None
@@ -31,7 +32,5 @@ class PhoneDetector:
             column_name=column.name,
             sample_count=hits,
             match_rate=round(rate, 4),
-            evidence={
-                "masked_samples": [patterns.mask_value(v) for v in non_empty if _is_phone(v)][:3],
-            },
+            evidence=collect_match_evidence(column, _is_phone),
         )

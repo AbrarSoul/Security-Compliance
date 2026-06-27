@@ -1,5 +1,6 @@
 from app.core.config import get_settings
 from app.services.scanner import patterns
+from app.services.scanner.location_evidence import collect_cell_evidence, collect_match_evidence
 from app.services.scanner.types import ColumnSample, DetectionResult
 
 settings = get_settings()
@@ -15,7 +16,7 @@ class SensitiveFieldDetector:
     name = "sensitive_field"
 
     def detect(self, column: ColumnSample) -> DetectionResult | None:
-        non_empty = [v for v in column.values if v]
+        non_empty = [c for c in column.cells if c.value]
         if not non_empty:
             return None
 
@@ -23,8 +24,8 @@ class SensitiveFieldDetector:
         name_match = normalized in patterns.SENSITIVE_COLUMN_NAMES
         pattern_match = bool(patterns.SENSITIVE_COLUMN_PATTERNS.search(column.name))
 
-        name_value_hits = sum(1 for v in non_empty if patterns.NAME_VALUE_RE.match(v))
-        name_value_rate = name_value_hits / len(non_empty)
+        name_matches = [c for c in non_empty if patterns.NAME_VALUE_RE.match(c.value)]
+        name_value_rate = len(name_matches) / len(non_empty)
 
         if name_match or pattern_match:
             return DetectionResult(
@@ -33,11 +34,14 @@ class SensitiveFieldDetector:
                 column_name=column.name,
                 sample_count=len(non_empty),
                 match_rate=1.0,
-                evidence={
-                    "reason": "sensitive_column_name",
-                    "column_indicator": normalized,
-                    "masked_samples": [patterns.mask_value(v) for v in non_empty[:3]],
-                },
+                evidence=collect_cell_evidence(
+                    non_empty,
+                    location_type=column.location_type,
+                    extra={
+                        "reason": "sensitive_column_name",
+                        "column_indicator": normalized,
+                    },
+                ),
             )
 
         if name_value_rate >= settings.scan_match_threshold:
@@ -45,12 +49,13 @@ class SensitiveFieldDetector:
                 finding_type="name",
                 severity="low",
                 column_name=column.name,
-                sample_count=name_value_hits,
+                sample_count=len(name_matches),
                 match_rate=round(name_value_rate, 4),
-                evidence={
-                    "reason": "name_pattern_in_values",
-                    "masked_samples": [patterns.mask_value(v) for v in non_empty if patterns.NAME_VALUE_RE.match(v)][:3],
-                },
+                evidence=collect_match_evidence(
+                    column,
+                    patterns.NAME_VALUE_RE.match,
+                    extra={"reason": "name_pattern_in_values"},
+                ),
             )
 
         return None

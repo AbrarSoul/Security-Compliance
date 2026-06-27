@@ -7,6 +7,8 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
+from app.services.reports.summary_text import format_location_list
+
 
 def _status_color(status: str | None) -> colors.Color:
     mapping = {
@@ -71,8 +73,20 @@ def build_report_pdf(report_data: dict[str, Any]) -> bytes:
     story.append(Paragraph("Executive Summary", heading_style))
     summary = report_data.get("executive_summary", {})
     file_info = report_data.get("file", {})
+    headline = summary.get("headline")
+    detail = summary.get("detail")
+    scan_scope = summary.get("scan_scope")
+
+    if headline:
+        story.append(Paragraph(f"<b>{headline}</b>", body_style))
+        story.append(Spacer(1, 0.08 * inch))
+    if detail:
+        story.append(Paragraph(detail, body_style))
+        story.append(Spacer(1, 0.12 * inch))
+
     summary_rows = [
         ["File", file_info.get("name", "N/A")],
+        ["Dataset", scan_scope or "Sample-based scan"],
         ["Risk Score", str(summary.get("risk_score", "N/A"))],
         ["Compliance Status", (summary.get("compliance_status") or "N/A").replace("_", " ").title()],
         ["Classification", (summary.get("classification") or "N/A").title()],
@@ -113,20 +127,24 @@ def build_report_pdf(report_data: dict[str, Any]) -> bytes:
     issues = report_data.get("detected_issues", [])
     story.append(Paragraph("Detected Issues", heading_style))
     if issues:
-        issue_rows = [["Type", "Severity", "Column", "Samples", "Match %"]]
+        issue_rows = [["Summary", "Locations", "Severity", "Column", "Match %"]]
         for issue in issues:
             match_pct = issue.get("match_rate")
             match_str = f"{match_pct * 100:.1f}%" if match_pct is not None else "—"
+            summary_text = issue.get("summary") or issue.get("type", "")
+            location_str = format_location_list(issue.get("evidence")) or "—"
             issue_rows.append(
                 [
-                    issue.get("type", ""),
+                    summary_text,
+                    location_str,
                     issue.get("severity", "").title(),
                     issue.get("column") or "—",
-                    str(issue.get("sample_count", 0)),
                     match_str,
                 ]
             )
-        issues_table = Table(issue_rows, colWidths=[1.1 * inch, 0.9 * inch, 1.4 * inch, 0.8 * inch, 0.8 * inch])
+        issues_table = Table(
+            issue_rows, colWidths=[1.8 * inch, 1.2 * inch, 0.7 * inch, 0.9 * inch, 0.6 * inch]
+        )
         issues_table.setStyle(
             TableStyle(
                 [
@@ -145,6 +163,32 @@ def build_report_pdf(report_data: dict[str, Any]) -> bytes:
             )
         )
         story.append(issues_table)
+
+        breakdown = (report_data.get("compliance_score") or {}).get("breakdown") or {}
+        contributions = breakdown.get("contributions") or []
+        if contributions:
+            story.append(Spacer(1, 0.12 * inch))
+            story.append(Paragraph("Score Breakdown", ParagraphStyle(
+                "SubHeading", parent=heading_style, fontSize=11, spaceBefore=8, spaceAfter=6,
+            )))
+            score_rows = [["Finding", "Column", "Severity", "Points"]]
+            for row in sorted(contributions, key=lambda r: r.get("total_points", 0), reverse=True):
+                score_rows.append([
+                    (row.get("finding_type") or "").replace("_", " ").title(),
+                    row.get("column_name") or "—",
+                    (row.get("severity") or "").title(),
+                    str(row.get("total_points", 0)),
+                ])
+            score_table = Table(score_rows, colWidths=[1.5 * inch, 1.5 * inch, 1.0 * inch, 0.8 * inch])
+            score_table.setStyle(TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#374151")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, -1), 9),
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#e5e7eb")),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f9fafb")]),
+            ]))
+            story.append(score_table)
     else:
         story.append(Paragraph("No sensitive data patterns were detected.", body_style))
 
@@ -167,9 +211,11 @@ def build_report_pdf(report_data: dict[str, Any]) -> bytes:
         story.append(Paragraph("No recommendations required.", body_style))
 
     story.append(Spacer(1, 0.2 * inch))
+    methodology = (report_data.get("scan_summary") or {}).get("methodology")
     story.append(
         Paragraph(
-            "<i>This report was generated automatically. "
+            "<i>This report was generated automatically from a sample-based scan. "
+            f"{methodology + '. ' if methodology else ''}"
             "Review findings before making compliance decisions.</i>",
             ParagraphStyle("Footer", parent=body_style, fontSize=8, textColor=colors.grey),
         )

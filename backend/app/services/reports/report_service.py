@@ -140,18 +140,26 @@ class ReportService:
             return content, filename, media_type
 
         if fmt == "pdf":
-            if not report.pdf_storage_key:
+            if not report.pdf_storage_key and not report.summary_json:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="PDF export not available",
                 )
-            try:
-                content = await self.storage.read(report.pdf_storage_key)
-            except FileNotFoundError as exc:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="PDF file not found in storage",
-                ) from exc
+            content: bytes | None = None
+            if report.pdf_storage_key:
+                try:
+                    content = await self.storage.read(report.pdf_storage_key)
+                except FileNotFoundError:
+                    pass
+            if content is None:
+                if not report.summary_json:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail="PDF export not available",
+                    )
+                content = build_report_pdf(report.summary_json)
+                if report.pdf_storage_key:
+                    await self.storage.save(report.pdf_storage_key, content)
             filename = f"compliance-report-{report.id}.pdf"
             media_type = "application/pdf"
             return content, filename, media_type

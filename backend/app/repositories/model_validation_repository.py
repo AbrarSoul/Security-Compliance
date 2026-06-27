@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.model_validation import ModelValidation
+from app.models.scan import Scan
 
 
 class ModelValidationRepository:
@@ -21,7 +22,7 @@ class ModelValidationRepository:
             select(ModelValidation)
             .options(
                 selectinload(ModelValidation.compliance_model),
-                selectinload(ModelValidation.scan),
+                selectinload(ModelValidation.scan).selectinload(Scan.findings),
             )
             .where(ModelValidation.id == validation_id)
         )

@@ -38,9 +38,10 @@ FINDING_TEMPLATES: dict[str, RecommendationTemplate] = {
         finding_type="password",
         priority="high",
         action_type="remove_column",
-        title="Remove password column",
-        description="Delete {column} from the dataset. Never store plaintext passwords. "
-        "If authentication data is required, store only salted password hashes using a vetted algorithm.",
+        title="Remove or hash password data",
+        description="Plaintext credential-like values were found in {column}. "
+        "Delete this column from the dataset or replace values with salted password hashes using a vetted algorithm. "
+        "Never store recoverable passwords in data files.",
     ),
     "api_key": RecommendationTemplate(
         finding_type="api_key",
