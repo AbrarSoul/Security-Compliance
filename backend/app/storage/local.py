@@ -31,7 +31,7 @@ class LocalStorageBackend(StorageBackend):
         for part in parts:
             path = path / part
         path = path.resolve()
-        if not str(path).startswith(str(self.base_path)):
+        if not path.is_relative_to(self.base_path):
             raise ValueError("Path traversal detected")
         return path
 
