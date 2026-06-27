@@ -40,8 +40,8 @@ export function ScanExecutiveSummary({
       })
     : null;
 
-  const alertVariant =
-    variant === "success" ? "success" : variant === "warning" ? "warning" : variant === "danger" ? "error" : "info";
+  const alertVariant: "error" | "success" | "info" =
+    variant === "success" ? "success" : variant === "danger" ? "error" : "info";
 
   return (
     <div className="space-y-4">

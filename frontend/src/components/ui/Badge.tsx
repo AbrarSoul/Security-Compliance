@@ -18,7 +18,7 @@ export function Badge({
   children,
   variant = "neutral",
 }: {
-  children: string;
+  children: React.ReactNode;
   variant?: StatusVariant;
 }) {
   return <span className={variants[variant]}>{children}</span>;

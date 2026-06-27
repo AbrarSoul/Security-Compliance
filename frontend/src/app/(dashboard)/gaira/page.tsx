@@ -44,6 +44,8 @@ function GairaContent() {
       gairaApi.listRoaia({ limit, offset }).then((res) => ({
         items: res.items,
         total: res.total,
+        limit,
+        offset,
       })),
     []
   );

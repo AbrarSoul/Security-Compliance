@@ -343,9 +343,7 @@ function QuestionField({
           <span className="font-mono text-text-muted">{question.id}</span> — {question.text}
         </p>
         {source && (
-          <Badge variant="info" >
-            Prefilled: {source}
-          </Badge>
+          <Badge variant="info">{`Prefilled: ${source}`}</Badge>
         )}
         {answer?.flagged && (
           <Badge variant="warning">Flagged — 2nd line review</Badge>
