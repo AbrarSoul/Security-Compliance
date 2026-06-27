@@ -12,7 +12,6 @@ settings = get_settings()
 class LocalStorageBackend(StorageBackend):
     def __init__(self, base_path: str | None = None):
         self.base_path = Path(base_path or settings.storage_local_path).resolve()
-        self.base_path.mkdir(parents=True, exist_ok=True)
 
     def build_storage_key(self, user_id: UUID, file_id: UUID, extension: str) -> str:
         ext = extension.lower().lstrip(".")
