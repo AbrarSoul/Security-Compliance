@@ -13,11 +13,7 @@ import { StatCardSkeleton } from "@/components/ui/Skeleton";
 import { nistAiRmfApi } from "@/lib/api";
 import { PERMS } from "@/lib/permissions";
 import type { NistControlStatusItem, NistCurrentProfile } from "@/lib/types/nistAiRmf";
-import {
-  NIST_FUNCTIONS,
-  NIST_STATUS_COLORS,
-  NIST_STATUS_LABELS,
-} from "@/lib/types/nistAiRmf";
+import { NIST_FUNCTIONS, NIST_STATUS_LABELS } from "@/lib/types/nistAiRmf";
 import { formatDate } from "@/lib/utils";
 
 function statusBadge(status: string) {
@@ -31,7 +27,7 @@ function statusBadge(status: string) {
           ? "danger"
           : "neutral";
   return (
-    <Badge variant={variant} className={NIST_STATUS_COLORS[key] ?? ""}>
+    <Badge variant={variant}>
       {NIST_STATUS_LABELS[key] ?? status}
     </Badge>
   );
