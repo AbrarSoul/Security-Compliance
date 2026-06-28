@@ -10,6 +10,7 @@ export const PERMS = {
   EXECUTION_REQUEST: "execution:request",
   EXECUTION_READ: "execution:read",
   EXECUTION_READ_ALL: "execution:read_all",
+  USER_MANAGE: "user:manage",
   POLICY_MANAGE: "policy:manage",
   RULE_MANAGE: "rule:manage",
   AUDIT_READ: "audit:read",

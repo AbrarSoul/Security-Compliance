@@ -6,6 +6,7 @@ from httpx import ASGITransport, AsyncClient
 
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-pytest-only")
 
+from app.core.user_approval import APPROVAL_APPROVED
 from app.db.session import AsyncSessionLocal
 from app.main import app
 from app.repositories.user_repository import UserRepository
@@ -49,14 +50,18 @@ async def _signup(client: AsyncClient, email: str | None = None) -> dict:
         pytest.skip("Database not available")
     _skip_if_no_db(response)
     assert response.status_code == 201, response.text
-    return response.json()
+    data = response.json()
+    data["_email"] = email
+    return data
 
 
 async def _assign_role(email: str, role_name: str) -> None:
     async with AsyncSessionLocal() as db:
         user = await UserRepository(db).get_by_email(email)
         assert user is not None
-        await RbacService(db).assign_role(user.id, role_name)
+        user.approval_status = APPROVAL_APPROVED
+        user.is_active = True
+        await RbacService(db).set_user_role(user.id, role_name)
         await db.commit()
 
 
@@ -72,7 +77,9 @@ async def _login(client: AsyncClient, email: str) -> dict:
 @pytest.mark.integration
 async def test_signup_assigns_default_user_role(client: AsyncClient):
     data = await _signup(client)
-    headers = _auth_headers(data["access_token"])
+    await _assign_role(data["_email"], "user")
+    tokens = await _login(client, data["_email"])
+    headers = _auth_headers(tokens["access_token"])
 
     me = await client.get("/api/v1/auth/me", headers=headers)
     assert me.status_code == 200
@@ -85,7 +92,9 @@ async def test_signup_assigns_default_user_role(client: AsyncClient):
 @pytest.mark.integration
 async def test_user_can_access_user_routes_not_admin(client: AsyncClient):
     data = await _signup(client)
-    headers = _auth_headers(data["access_token"])
+    await _assign_role(data["_email"], "user")
+    tokens = await _login(client, data["_email"])
+    headers = _auth_headers(tokens["access_token"])
 
     allowed = await client.post("/api/v1/rbac/user/execution-validation", headers=headers)
     assert allowed.status_code == 200

@@ -30,3 +30,8 @@ class RbacService:
         assigned = await self.repo.assign_role_by_name(user_id, role_name)
         if assigned is None:
             raise ValueError(f"Role not found: {role_name}")
+
+    async def set_user_role(self, user_id: UUID, role_name: str) -> None:
+        assigned = await self.repo.set_user_role(user_id, role_name)
+        if assigned is None:
+            raise ValueError(f"Role not found: {role_name}")

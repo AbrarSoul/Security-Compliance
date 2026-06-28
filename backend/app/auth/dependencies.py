@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.security import decode_token
 from app.db.session import get_db
 from app.models.user import User
+from app.core.user_approval import APPROVAL_APPROVED
 from app.repositories.user_repository import UserRepository
 
 bearer_scheme = HTTPBearer(auto_error=False)
@@ -67,11 +68,16 @@ async def get_current_user(
 async def get_current_active_user(
     user: User = Depends(get_current_user),
 ) -> User:
-    """Require an active user account."""
-    if not user.is_active:
+    """Require an approved, active user account."""
+    if user.approval_status != APPROVAL_APPROVED or not user.is_active:
+        detail = "Account pending admin approval"
+        if user.approval_status == "rejected":
+            detail = "Registration was rejected by an administrator"
+        elif not user.is_active and user.approval_status == APPROVAL_APPROVED:
+            detail = "Account is inactive"
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Account is inactive",
+            detail=detail,
         )
     return user
 

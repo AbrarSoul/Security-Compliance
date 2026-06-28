@@ -1,0 +1,1148 @@
+{
+  "version": "1.0",
+  "source": "NIST AI RMF 1.0",
+  "source_document": "Frameworks/NIST_AI_RMF.md",
+  "source_url": "https://doi.org/10.6028/NIST.AI.100-1",
+  "playbook_url": "https://www.nist.gov/itl/ai-risk-management-framework",
+  "profile": {
+    "id": "complianceguard-operational-v1",
+    "name": "ComplianceGuard Operational AI RMF Profile",
+    "description": "Cross-sectoral profile for LLM and data-pipeline AI use: GAIRA governance, model registry, dataset scanning, execution validation, and runtime guard.",
+    "type": "cross-sectoral"
+  },
+  "trustworthiness_characteristics": [
+    "valid_and_reliable",
+    "safe",
+    "secure_and_resilient",
+    "accountable_and_transparent",
+    "explainable_and_interpretable",
+    "privacy_enhanced",
+    "fair_with_harmful_bias_managed"
+  ],
+  "control_count": 72,
+  "controls": [
+    {
+      "id": "GOVERN-1.1",
+      "function": "GOVERN",
+      "category_id": "GOVERN1",
+      "category_title": "Policies, processes, procedures, and practices across the organization related to the mapping, measuring, and managing of AI risks are in place, transparent, and implemented effectively.",
+      "text": "Legal and regulatory requirements involving AI are understood, managed, and documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "GAIRA EU AI Act module supports legal applicability; formal legal register is organizational."
+    },
+    {
+      "id": "GOVERN-1.2",
+      "function": "GOVERN",
+      "category_id": "GOVERN1",
+      "category_title": "Policies, processes, procedures, and practices across the organization related to the mapping, measuring, and managing of AI risks are in place, transparent, and implemented effectively.",
+      "text": "The characteristics of trustworthy AI are integrated into organizational policies, processes, procedures, and practices.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "policies",
+        "rules"
+      ],
+      "evaluator": "org_has_enabled_rules",
+      "trustworthiness": [],
+      "notes": "Atomic rules and policy bundles encode privacy/security trustworthiness checks."
+    },
+    {
+      "id": "GOVERN-1.3",
+      "function": "GOVERN",
+      "category_id": "GOVERN1",
+      "category_title": "Policies, processes, procedures, and practices across the organization related to the mapping, measuring, and managing of AI risks are in place, transparent, and implemented effectively.",
+      "text": "Processes are in place to determine the needed level of risk management activities based on organizational risk tolerance.",
+      "evidence_type": "manual",
+      "coverage": "partial",
+      "modules": [
+        "gaira",
+        "scoring"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "GAIRA risk levels and scoring thresholds; org risk appetite is manual config."
+    },
+    {
+      "id": "GOVERN-1.4",
+      "function": "GOVERN",
+      "category_id": "GOVERN1",
+      "category_title": "Policies, processes, procedures, and practices across the organization related to the mapping, measuring, and managing of AI risks are in place, transparent, and implemented effectively.",
+      "text": "The risk management process and its outcomes are established through transparent policies, procedures, and other controls.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "policies",
+        "rules",
+        "audit"
+      ],
+      "evaluator": "org_has_active_controls",
+      "trustworthiness": [],
+      "notes": "Active policies, enabled rules, and audit trail provide operational controls."
+    },
+    {
+      "id": "GOVERN-1.5",
+      "function": "GOVERN",
+      "category_id": "GOVERN1",
+      "category_title": "Policies, processes, procedures, and practices across the organization related to the mapping, measuring, and managing of AI risks are in place, transparent, and implemented effectively.",
+      "text": "Ongoing monitoring and periodic review of the risk management process and its outcomes are planned and roles defined.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "audit",
+        "gaps",
+        "rbac"
+      ],
+      "evaluator": "org_has_audit_and_gaps",
+      "trustworthiness": [],
+      "notes": "RBAC roles, audit logs, and gap analysis runs support periodic review."
+    },
+    {
+      "id": "GOVERN-1.6",
+      "function": "GOVERN",
+      "category_id": "GOVERN1",
+      "category_title": "Policies, processes, procedures, and practices across the organization related to the mapping, measuring, and managing of AI risks are in place, transparent, and implemented effectively.",
+      "text": "Mechanisms are in place to inventory AI systems and are resourced according to organizational risk priorities.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "gaira",
+        "models"
+      ],
+      "evaluator": "roaia_inventory",
+      "trustworthiness": [],
+      "notes": "ROAIA (AI applications) and model registry provide inventory."
+    },
+    {
+      "id": "GOVERN-1.7",
+      "function": "GOVERN",
+      "category_id": "GOVERN1",
+      "category_title": "Policies, processes, procedures, and practices across the organization related to the mapping, measuring, and managing of AI risks are in place, transparent, and implemented effectively.",
+      "text": "Processes are in place for decommissioning and phasing out AI systems safely.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Not automated; requires org lifecycle process."
+    },
+    {
+      "id": "GOVERN-2.1",
+      "function": "GOVERN",
+      "category_id": "GOVERN2",
+      "category_title": "Accountability structures are in place so that the appropriate teams and individuals are empowered, responsible, and trained for mapping, measuring, and managing AI risks.",
+      "text": "Roles and responsibilities related to mapping, measuring, and managing AI risks are documented and clear.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "rbac"
+      ],
+      "evaluator": "rbac_roles_configured",
+      "trustworthiness": [],
+      "notes": "RBAC permissions map to Admin/User/Auditor responsibilities."
+    },
+    {
+      "id": "GOVERN-2.2",
+      "function": "GOVERN",
+      "category_id": "GOVERN2",
+      "category_title": "Accountability structures are in place so that the appropriate teams and individuals are empowered, responsible, and trained for mapping, measuring, and managing AI risks.",
+      "text": "Personnel and partners receive AI risk management training consistent with policies and procedures.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Training is organizational; not tracked in platform."
+    },
+    {
+      "id": "GOVERN-2.3",
+      "function": "GOVERN",
+      "category_id": "GOVERN2",
+      "category_title": "Accountability structures are in place so that the appropriate teams and individuals are empowered, responsible, and trained for mapping, measuring, and managing AI risks.",
+      "text": "Executive leadership takes responsibility for decisions about AI system development and deployment risks.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": "gaira_leadership_decisions",
+      "trustworthiness": [],
+      "notes": "GAIRA submit records proceed/no-go decisions; executive attestation is manual."
+    },
+    {
+      "id": "GOVERN-3.1",
+      "function": "GOVERN",
+      "category_id": "GOVERN3",
+      "category_title": "Workforce diversity, equity, inclusion, and accessibility processes are prioritized in the mapping, measuring, and managing of AI risks throughout the lifecycle.",
+      "text": "Decision-making is informed by a diverse team (demographics, disciplines, experience, expertise, backgrounds).",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [
+        "guard"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "DEI and human-AI oversight processes are organizational."
+    },
+    {
+      "id": "GOVERN-3.2",
+      "function": "GOVERN",
+      "category_id": "GOVERN3",
+      "category_title": "Workforce diversity, equity, inclusion, and accessibility processes are prioritized in the mapping, measuring, and managing of AI risks throughout the lifecycle.",
+      "text": "Policies define roles and responsibilities for human-AI configurations and oversight of AI systems.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [
+        "guard"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "DEI and human-AI oversight processes are organizational."
+    },
+    {
+      "id": "GOVERN-4.1",
+      "function": "GOVERN",
+      "category_id": "GOVERN4",
+      "category_title": "Organizational teams are committed to a culture that considers and communicates AI risk.",
+      "text": "Policies foster a critical thinking and safety-first mindset in AI design, development, deployment, and use.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "policies",
+        "guard"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Block/warn policies and guard enforce safety-first execution."
+    },
+    {
+      "id": "GOVERN-4.2",
+      "function": "GOVERN",
+      "category_id": "GOVERN4",
+      "category_title": "Organizational teams are committed to a culture that considers and communicates AI risk.",
+      "text": "Teams document risks and potential impacts of AI technology and communicate about impacts.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira",
+        "reports"
+      ],
+      "evaluator": "gaira_documentation",
+      "trustworthiness": [],
+      "notes": "GAIRA assessments and scan/report artifacts document impacts."
+    },
+    {
+      "id": "GOVERN-4.3",
+      "function": "GOVERN",
+      "category_id": "GOVERN4",
+      "category_title": "Organizational teams are committed to a culture that considers and communicates AI risk.",
+      "text": "Practices enable AI testing, identification of incidents, and information sharing.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "threats",
+        "guard",
+        "audit"
+      ],
+      "evaluator": "incident_detection",
+      "trustworthiness": [],
+      "notes": "Threat detection, guard violations, and audit logs support incident identification."
+    },
+    {
+      "id": "GOVERN-5.1",
+      "function": "GOVERN",
+      "category_id": "GOVERN5",
+      "category_title": "Processes are in place for robust engagement with relevant AI actors.",
+      "text": "Policies collect, consider, prioritize, and integrate feedback from external parties on AI risks and impacts.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "GAIRA 2nd-line review for flagged answers; broader engagement is manual."
+    },
+    {
+      "id": "GOVERN-5.2",
+      "function": "GOVERN",
+      "category_id": "GOVERN5",
+      "category_title": "Processes are in place for robust engagement with relevant AI actors.",
+      "text": "Mechanisms incorporate adjudicated feedback from relevant AI actors into system design and implementation.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "GAIRA 2nd-line review for flagged answers; broader engagement is manual."
+    },
+    {
+      "id": "GOVERN-6.1",
+      "function": "GOVERN",
+      "category_id": "GOVERN6",
+      "category_title": "Policies and procedures are in place to address AI risks and benefits arising from third-party software and data and other supply chain issues.",
+      "text": "Policies address AI risks associated with third-party entities including IP infringement.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "models"
+      ],
+      "evaluator": "no_unapproved_external_models",
+      "trustworthiness": [],
+      "notes": "Model registry approval workflow for external/cloud models."
+    },
+    {
+      "id": "GOVERN-6.2",
+      "function": "GOVERN",
+      "category_id": "GOVERN6",
+      "category_title": "Policies and procedures are in place to address AI risks and benefits arising from third-party software and data and other supply chain issues.",
+      "text": "Contingency processes handle failures or incidents in third-party data or high-risk AI systems.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "executions",
+        "guard"
+      ],
+      "evaluator": "execution_blocking",
+      "trustworthiness": [],
+      "notes": "Pre-execution validation and guard block/warn on risky third-party use."
+    },
+    {
+      "id": "MAP-1.1",
+      "function": "MAP",
+      "category_id": "MAP1",
+      "category_title": "Context is established and understood.",
+      "text": "Intended purposes, context-specific laws, norms, deployment settings are documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": "gaira_context_documented",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-1.2",
+      "function": "MAP",
+      "category_id": "MAP1",
+      "category_title": "Context is established and understood.",
+      "text": "Interdisciplinary diverse AI actors for establishing context are documented.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Organizational process not tracked in platform."
+    },
+    {
+      "id": "MAP-1.3",
+      "function": "MAP",
+      "category_id": "MAP1",
+      "category_title": "Context is established and understood.",
+      "text": "Organization mission and relevant AI goals are understood and documented.",
+      "evidence_type": "manual",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-1.4",
+      "function": "MAP",
+      "category_id": "MAP1",
+      "category_title": "Context is established and understood.",
+      "text": "Business value or context of business use is clearly defined or re-evaluated.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": "gaira_context_documented",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-1.5",
+      "function": "MAP",
+      "category_id": "MAP1",
+      "category_title": "Context is established and understood.",
+      "text": "Organizational risk tolerances are determined and documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "scoring",
+        "gaira"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-1.6",
+      "function": "MAP",
+      "category_id": "MAP1",
+      "category_title": "Context is established and understood.",
+      "text": "System requirements (e.g., privacy of users) are elicited and understood.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "rules",
+        "policies"
+      ],
+      "evaluator": "org_has_enabled_rules",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-2.1",
+      "function": "MAP",
+      "category_id": "MAP2",
+      "category_title": "Categorization of the AI system is performed.",
+      "text": "Tasks and methods the AI system will support are defined.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "models",
+        "gaira"
+      ],
+      "evaluator": "models_registry_populated",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-2.2",
+      "function": "MAP",
+      "category_id": "MAP2",
+      "category_title": "Categorization of the AI system is performed.",
+      "text": "Knowledge limits and human oversight of system output are documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira",
+        "models"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-2.3",
+      "function": "MAP",
+      "category_id": "MAP2",
+      "category_title": "Categorization of the AI system is performed.",
+      "text": "Scientific integrity and TEVV considerations are identified and documented.",
+      "evidence_type": "manual",
+      "coverage": "partial",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-3.1",
+      "function": "MAP",
+      "category_id": "MAP3",
+      "category_title": "AI capabilities, targeted usage, goals, and expected benefits and costs compared with appropriate benchmarks are understood.",
+      "text": "Potential benefits of intended AI functionality are examined and documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-3.2",
+      "function": "MAP",
+      "category_id": "MAP3",
+      "category_title": "AI capabilities, targeted usage, goals, and expected benefits and costs compared with appropriate benchmarks are understood.",
+      "text": "Potential costs from AI errors or trustworthiness issues are examined and documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira",
+        "analytics"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-3.3",
+      "function": "MAP",
+      "category_id": "MAP3",
+      "category_title": "AI capabilities, targeted usage, goals, and expected benefits and costs compared with appropriate benchmarks are understood.",
+      "text": "Targeted application scope is specified based on capability and context.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": "gaira_context_documented",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-3.4",
+      "function": "MAP",
+      "category_id": "MAP3",
+      "category_title": "AI capabilities, targeted usage, goals, and expected benefits and costs compared with appropriate benchmarks are understood.",
+      "text": "Operator proficiency processes with AI performance and trustworthiness are defined.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Organizational process not tracked in platform."
+    },
+    {
+      "id": "MAP-3.5",
+      "function": "MAP",
+      "category_id": "MAP3",
+      "category_title": "AI capabilities, targeted usage, goals, and expected benefits and costs compared with appropriate benchmarks are understood.",
+      "text": "Human oversight processes are defined per GOVERN policies.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "guard",
+        "executions"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-4.1",
+      "function": "MAP",
+      "category_id": "MAP4",
+      "category_title": "Risks and benefits are mapped for all components of the AI system including third-party software and data.",
+      "text": "Approaches for mapping third-party component risks are in place and documented.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "models"
+      ],
+      "evaluator": "no_unapproved_external_models",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-4.2",
+      "function": "MAP",
+      "category_id": "MAP4",
+      "category_title": "Risks and benefits are mapped for all components of the AI system including third-party software and data.",
+      "text": "Internal risk controls for AI components including third-party technologies are documented.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "policies",
+        "rules",
+        "models"
+      ],
+      "evaluator": "org_has_active_controls",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-5.1",
+      "function": "MAP",
+      "category_id": "MAP5",
+      "category_title": "Impacts to individuals, groups, communities, organizations, and society are characterized.",
+      "text": "Likelihood and magnitude of identified impacts are documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": "gaira_risk_assessed",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MAP-5.2",
+      "function": "MAP",
+      "category_id": "MAP5",
+      "category_title": "Impacts to individuals, groups, communities, organizations, and society are characterized.",
+      "text": "Practices for engaging AI actors and integrating feedback on impacts are in place.",
+      "evidence_type": "manual",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-1.1",
+      "function": "MEASURE",
+      "category_id": "MEASURE1",
+      "category_title": "Appropriate methods and metrics are identified and applied.",
+      "text": "Approaches and metrics for MAP risks are selected; unmeasurable risks documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaps"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-1.2",
+      "function": "MEASURE",
+      "category_id": "MEASURE1",
+      "category_title": "Appropriate methods and metrics are identified and applied.",
+      "text": "Appropriateness of AI metrics and control effectiveness are regularly assessed.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "gaps",
+        "analytics"
+      ],
+      "evaluator": "gap_analysis_recent",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-1.3",
+      "function": "MEASURE",
+      "category_id": "MEASURE1",
+      "category_title": "Appropriate methods and metrics are identified and applied.",
+      "text": "Independent assessors and domain experts are involved in regular assessments.",
+      "evidence_type": "manual",
+      "coverage": "partial",
+      "modules": [],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Independent TEVV not automated in platform."
+    },
+    {
+      "id": "MEASURE-2.4",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "AI system functionality and behavior are monitored in production.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "guard",
+        "monitoring"
+      ],
+      "evaluator": "production_monitoring",
+      "trustworthiness": [
+        "valid_and_reliable",
+        "safe"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-2.7",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "AI system security and resilience are evaluated and documented.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "scans",
+        "executions",
+        "gaps"
+      ],
+      "evaluator": "security_controls_active",
+      "trustworthiness": [
+        "secure_and_resilient"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-2.8",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "Transparency and accountability risks are examined and documented.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "audit",
+        "reports"
+      ],
+      "evaluator": "org_has_audit_and_gaps",
+      "trustworthiness": [
+        "accountable_and_transparent"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-2.10",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "Privacy risk of the AI system is examined and documented.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "scans",
+        "guard"
+      ],
+      "evaluator": "privacy_scanning_active",
+      "trustworthiness": [
+        "privacy_enhanced"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-3.1",
+      "function": "MEASURE",
+      "category_id": "MEASURE3",
+      "category_title": "Mechanisms for tracking identified AI risks over time are in place.",
+      "text": "Approaches track existing, unanticipated, and emergent AI risks over time.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "analytics",
+        "threats",
+        "gaps"
+      ],
+      "evaluator": "risk_tracking_active",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-3.3",
+      "function": "MEASURE",
+      "category_id": "MEASURE3",
+      "category_title": "Mechanisms for tracking identified AI risks over time are in place.",
+      "text": "Feedback processes for end users to report problems are established.",
+      "evidence_type": "manual",
+      "coverage": "partial",
+      "modules": [],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "User appeal workflows not yet in platform."
+    },
+    {
+      "id": "MEASURE-4.1",
+      "function": "MEASURE",
+      "category_id": "MEASURE4",
+      "category_title": "Feedback about efficacy of measurement is gathered and assessed.",
+      "text": "Measurement approaches are connected to deployment contexts and documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "executions",
+        "models"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-2.1",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "Test sets, metrics, and TEVV tools are documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-2.2",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "Evaluations involving human subjects meet applicable requirements.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Human subjects research not in scope."
+    },
+    {
+      "id": "MEASURE-2.3",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "Performance or assurance criteria are measured for deployment-like conditions.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": null,
+      "trustworthiness": [
+        "valid_and_reliable"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-2.5",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "AI system is demonstrated valid and reliable; generalization limits documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": null,
+      "trustworthiness": [
+        "valid_and_reliable"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-2.6",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "AI system is evaluated for safety risks with fail-safe behavior.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": "execution_blocking",
+      "trustworthiness": [
+        "safe"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-2.9",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "AI model is explained, validated, and output interpreted in context.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": null,
+      "trustworthiness": [
+        "explainable_and_interpretable"
+      ],
+      "notes": "Explainability not implemented."
+    },
+    {
+      "id": "MEASURE-2.11",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "Fairness and bias are evaluated and documented.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": null,
+      "trustworthiness": [
+        "fair_with_harmful_bias_managed"
+      ],
+      "notes": "Bias evaluation not implemented."
+    },
+    {
+      "id": "MEASURE-2.12",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "Environmental impact of AI training and management is assessed.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Sustainability not tracked."
+    },
+    {
+      "id": "MEASURE-2.13",
+      "function": "MEASURE",
+      "category_id": "MEASURE2",
+      "category_title": "AI systems are evaluated for trustworthy characteristics.",
+      "text": "Effectiveness of TEVV metrics and processes is evaluated.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "scans"
+      ],
+      "evaluator": "gap_analysis_recent",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-3.2",
+      "function": "MEASURE",
+      "category_id": "MEASURE3",
+      "category_title": "Mechanisms for tracking identified AI risks over time are in place.",
+      "text": "Risk tracking for hard-to-measure settings is considered.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "analytics"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-4.2",
+      "function": "MEASURE",
+      "category_id": "MEASURE4",
+      "category_title": "Feedback about efficacy of measurement is gathered and assessed.",
+      "text": "Measurement results are validated with domain expert input.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "analytics"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MEASURE-4.3",
+      "function": "MEASURE",
+      "category_id": "MEASURE4",
+      "category_title": "Feedback about efficacy of measurement is gathered and assessed.",
+      "text": "Performance improvements or declines from field data are documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "analytics"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-1.1",
+      "function": "MANAGE",
+      "category_id": "MANAGE1",
+      "category_title": "AI risks based on assessments and other analytical output from the MAP and MEASURE functions are prioritized, responded to, and managed.",
+      "text": "Determination whether AI system should proceed based on intended purposes.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira"
+      ],
+      "evaluator": "gaira_leadership_decisions",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-1.2",
+      "function": "MANAGE",
+      "category_id": "MANAGE1",
+      "category_title": "AI risks based on assessments and other analytical output from the MAP and MEASURE functions are prioritized, responded to, and managed.",
+      "text": "Treatment of documented AI risks is prioritized by impact and likelihood.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "gaps"
+      ],
+      "evaluator": "gap_analysis_recent",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-1.3",
+      "function": "MANAGE",
+      "category_id": "MANAGE1",
+      "category_title": "AI risks based on assessments and other analytical output from the MAP and MEASURE functions are prioritized, responded to, and managed.",
+      "text": "Responses to high-priority MAP risks are developed, planned, and documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaps",
+        "gaira"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-1.4",
+      "function": "MANAGE",
+      "category_id": "MANAGE1",
+      "category_title": "AI risks based on assessments and other analytical output from the MAP and MEASURE functions are prioritized, responded to, and managed.",
+      "text": "Negative residual risks to acquirers and end users are documented.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaira",
+        "reports"
+      ],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-2.1",
+      "function": "MANAGE",
+      "category_id": "MANAGE2",
+      "category_title": "Strategies to maximize AI benefits and minimize negative impacts are planned, prepared, implemented, documented, and informed by input from relevant AI actors.",
+      "text": "Resources to manage AI risks and non-AI alternatives are considered.",
+      "evidence_type": "manual",
+      "coverage": "none",
+      "modules": [],
+      "evaluator": null,
+      "trustworthiness": [],
+      "notes": "Resource planning is organizational."
+    },
+    {
+      "id": "MANAGE-2.2",
+      "function": "MANAGE",
+      "category_id": "MANAGE2",
+      "category_title": "Strategies to maximize AI benefits and minimize negative impacts are planned, prepared, implemented, documented, and informed by input from relevant AI actors.",
+      "text": "Mechanisms sustain value of deployed AI systems.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "models",
+        "monitoring"
+      ],
+      "evaluator": "production_monitoring",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-2.3",
+      "function": "MANAGE",
+      "category_id": "MANAGE2",
+      "category_title": "Strategies to maximize AI benefits and minimize negative impacts are planned, prepared, implemented, documented, and informed by input from relevant AI actors.",
+      "text": "Procedures respond to and recover from previously unknown risks.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "threats",
+        "gaps"
+      ],
+      "evaluator": "incident_detection",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-2.4",
+      "function": "MANAGE",
+      "category_id": "MANAGE2",
+      "category_title": "Strategies to maximize AI benefits and minimize negative impacts are planned, prepared, implemented, documented, and informed by input from relevant AI actors.",
+      "text": "Mechanisms supersede or deactivate AI systems with inconsistent outcomes.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "executions",
+        "guard"
+      ],
+      "evaluator": "execution_blocking",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-3.1",
+      "function": "MANAGE",
+      "category_id": "MANAGE3",
+      "category_title": "AI risks and benefits from third-party entities are managed.",
+      "text": "Third-party AI risks and benefits are monitored with controls applied.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "models"
+      ],
+      "evaluator": "no_unapproved_external_models",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-3.2",
+      "function": "MANAGE",
+      "category_id": "MANAGE3",
+      "category_title": "AI risks and benefits from third-party entities are managed.",
+      "text": "Pre-trained models are monitored as part of regular maintenance.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "models",
+        "monitoring"
+      ],
+      "evaluator": "production_monitoring",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-4.1",
+      "function": "MANAGE",
+      "category_id": "MANAGE4",
+      "category_title": "Risk treatments, including response and recovery, and communication plans for the identified and measured AI risks are documented and monitored regularly.",
+      "text": "Post-deployment monitoring plans include incident response and decommissioning.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "monitoring",
+        "audit"
+      ],
+      "evaluator": "production_monitoring",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-4.2",
+      "function": "MANAGE",
+      "category_id": "MANAGE4",
+      "category_title": "Risk treatments, including response and recovery, and communication plans for the identified and measured AI risks are documented and monitored regularly.",
+      "text": "Continual improvement activities are integrated into AI system updates.",
+      "evidence_type": "hybrid",
+      "coverage": "partial",
+      "modules": [
+        "gaps"
+      ],
+      "evaluator": "gap_analysis_recent",
+      "trustworthiness": [],
+      "notes": ""
+    },
+    {
+      "id": "MANAGE-4.3",
+      "function": "MANAGE",
+      "category_id": "MANAGE4",
+      "category_title": "Risk treatments, including response and recovery, and communication plans for the identified and measured AI risks are documented and monitored regularly.",
+      "text": "Incidents and errors are communicated; tracking and recovery are documented.",
+      "evidence_type": "automated",
+      "coverage": "partial",
+      "modules": [
+        "threats",
+        "audit",
+        "notifications"
+      ],
+      "evaluator": "incident_detection",
+      "trustworthiness": [],
+      "notes": ""
+    }
+  ]
+}

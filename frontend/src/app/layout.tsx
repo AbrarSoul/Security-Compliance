@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ComplianceGuard | Security Compliance Platform",
+  title: "Security Compliance | GPT-LAB SANDBOX",
   description: "Enterprise dataset compliance scanning, risk assessment, and reporting",
 };
 

@@ -121,7 +121,7 @@ class NotificationService:
             notification.email_status = EMAIL_STATUS_SKIPPED
             return
 
-        subject = f"[ComplianceGuard] {notification.title}"
+        subject = f"[Security Compliance] {notification.title}"
         body = f"{notification.message}\n\nSeverity: {notification.severity}\nType: {notification.notification_type}"
         ok, status = self._email.send(to_email=email, subject=subject, body=body)
         notification.email_status = EMAIL_STATUS_SENT if ok else (

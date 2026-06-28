@@ -8,27 +8,50 @@ import { ComplianceBadge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { TableSkeleton } from "@/components/ui/Skeleton";
+import { useAuth } from "@/contexts/AuthContext";
 import { filesApi, scansApi } from "@/lib/api";
+import { PERMS } from "@/lib/permissions";
 import type { Scan, UploadedFile } from "@/lib/types";
 import { formatDate, riskColor, statusLabel } from "@/lib/utils";
 
 export default function ScansPage() {
+  const { hasPermission } = useAuth();
   const [scans, setScans] = useState<Scan[]>([]);
   const [fileMap, setFileMap] = useState<Record<string, UploadedFile>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([scansApi.list(), filesApi.list()])
-      .then(([s, f]) => {
-        setScans(s.items);
-        const map: Record<string, UploadedFile> = {};
-        f.items.forEach((file) => {
-          map[file.id] = file;
-        });
-        setFileMap(map);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    const tasks: Promise<void>[] = [];
+
+    if (hasPermission(PERMS.SCAN_READ)) {
+      tasks.push(
+        scansApi
+          .list()
+          .then((s) => setScans(s.items))
+          .catch(() => setScans([]))
+      );
+    }
+    if (hasPermission(PERMS.FILE_READ)) {
+      tasks.push(
+        filesApi
+          .list()
+          .then((f) => {
+            const map: Record<string, UploadedFile> = {};
+            f.items.forEach((file) => {
+              map[file.id] = file;
+            });
+            setFileMap(map);
+          })
+          .catch(() => setFileMap({}))
+      );
+    }
+
+    if (tasks.length === 0) {
+      setLoading(false);
+      return;
+    }
+    void Promise.all(tasks).finally(() => setLoading(false));
+  }, [hasPermission]);
 
   return (
     <>

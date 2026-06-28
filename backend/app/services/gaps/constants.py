@@ -10,6 +10,9 @@ GAP_RISKY_MODEL = "risky_model"
 GAP_UNAPPROVED_EXTERNAL_API = "unapproved_external_api"
 GAP_NO_ENABLED_RULES = "no_enabled_rules"
 GAP_UNAPPROVED_MODEL = "unapproved_model"
+GAP_MISSING_GAIRA_ASSESSMENT = "missing_gaira_assessment"
+GAP_INCOMPLETE_ROAIA_CONTEXT = "incomplete_roaia_context"
+GAP_MODEL_LOGGING_DISABLED = "model_logging_disabled"
 
 # Categories
 CATEGORY_SECURITY = "security"

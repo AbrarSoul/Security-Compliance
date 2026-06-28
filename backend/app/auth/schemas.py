@@ -41,6 +41,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     full_name: str | None
     is_active: bool
+    approval_status: str
     created_at: datetime
 
 
@@ -59,3 +60,9 @@ class TokenResponse(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+
+
+class SignupPendingResponse(BaseModel):
+    message: str
+    approval_status: str = "pending"
+    email: EmailStr

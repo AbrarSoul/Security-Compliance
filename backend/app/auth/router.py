@@ -8,6 +8,7 @@ from app.auth.schemas import (
     LogoutRequest,
     MessageResponse,
     RefreshRequest,
+    SignupPendingResponse,
     SignupRequest,
     TokenResponse,
     UserMeResponse,
@@ -23,9 +24,13 @@ def get_auth_service(db: AsyncSession = Depends(get_db)) -> AuthService:
     return AuthService(db)
 
 
-@router.post("/signup", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/signup",
+    response_model=SignupPendingResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 async def signup(body: SignupRequest, auth: AuthService = Depends(get_auth_service)):
-    """Register a new user and return JWT tokens."""
+    """Register a new user (pending admin approval)."""
     return await auth.signup(body)
 
 

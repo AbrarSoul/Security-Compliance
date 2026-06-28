@@ -1,8 +1,10 @@
 import { getRefreshToken } from "./auth";
 import { request } from "./api-core";
 import type {
+  PendingUser,
   Report,
   Scan,
+  SignupPendingResponse,
   TokenResponse,
   UploadedFile,
   User,
@@ -15,11 +17,16 @@ export { analyticsApi } from "./api/analytics";
 export { gapsApi } from "./api/gaps";
 export { threatsApi } from "./api/threats";
 export { gairaApi } from "./api/gaira";
+export { compliancePostureApi } from "./api/compliancePosture";
+export { nistAiRmfApi } from "./api/nistAiRmf";
 
 // Auth
 export const authApi = {
   signup: (body: { email: string; password: string; full_name?: string }) =>
-    request<TokenResponse>("/auth/signup", { method: "POST", body: JSON.stringify(body) }),
+    request<SignupPendingResponse>("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 
   login: (body: { email: string; password: string }) =>
     request<TokenResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
@@ -31,6 +38,20 @@ export const authApi = {
       method: "POST",
       body: JSON.stringify({ refresh_token: getRefreshToken() }),
     }),
+};
+
+export const usersApi = {
+  listPending: () =>
+    request<{ items: PendingUser[]; total: number }>("/users/pending"),
+
+  approve: (userId: string, role: "admin" | "user" | "auditor") =>
+    request<{ message: string }>(`/users/${userId}/approve`, {
+      method: "POST",
+      body: JSON.stringify({ role }),
+    }),
+
+  reject: (userId: string) =>
+    request<{ message: string }>(`/users/${userId}/reject`, { method: "POST" }),
 };
 
 // Files

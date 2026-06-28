@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 from httpx import AsyncClient
 
+from app.core.user_approval import APPROVAL_APPROVED
 from app.db.session import AsyncSessionLocal
 from app.repositories.user_repository import UserRepository
 from app.services.rbac_service import RbacService
@@ -50,6 +51,16 @@ async def signup_user(
     return data
 
 
+async def approve_user(email: str, role_name: str = "user") -> None:
+    async with AsyncSessionLocal() as db:
+        user = await UserRepository(db).get_by_email(email)
+        assert user is not None
+        user.approval_status = APPROVAL_APPROVED
+        user.is_active = True
+        await RbacService(db).set_user_role(user.id, role_name)
+        await db.commit()
+
+
 async def login_user(client: AsyncClient, email: str) -> dict:
     response = await client.post(
         "/api/v1/auth/login",
@@ -60,18 +71,14 @@ async def login_user(client: AsyncClient, email: str) -> dict:
 
 
 async def assign_role(email: str, role_name: str) -> None:
-    async with AsyncSessionLocal() as db:
-        user = await UserRepository(db).get_by_email(email)
-        assert user is not None
-        await RbacService(db).assign_role(user.id, role_name)
-        await db.commit()
+    await approve_user(email, role_name)
 
 
 async def signup_with_role(
     client: AsyncClient, role_name: str, *, email: str | None = None
 ) -> dict:
     data = await signup_user(client, email=email)
-    await assign_role(data["_email"], role_name)
+    await approve_user(data["_email"], role_name)
     tokens = await login_user(client, data["_email"])
     tokens["_email"] = data["_email"]
     return tokens

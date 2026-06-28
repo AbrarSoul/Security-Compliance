@@ -16,7 +16,7 @@ export function AuthShell({
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-black shadow-glow">
             <IconShield className="h-6 w-6" />
           </div>
-          <span className="text-lg font-semibold text-text-primary">ComplianceGuard</span>
+          <span className="text-lg font-semibold text-text-primary">Security Compliance</span>
         </div>
         <div>
           <h2 className="text-3xl font-bold leading-tight text-text-primary text-balance">
@@ -41,7 +41,7 @@ export function AuthShell({
             </li>
           </ul>
         </div>
-        <p className="text-xs text-text-muted">© ComplianceGuard · Security Compliance Platform</p>
+        <p className="text-xs text-text-muted">© Security Compliance · GPT-LAB SANDBOX</p>
       </div>
       <div className="flex flex-1 items-center justify-center px-6 py-12">
         <div className="w-full max-w-md animate-fade-in-up">
@@ -50,7 +50,7 @@ export function AuthShell({
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-black">
                 <IconShield className="h-5 w-5" />
               </div>
-              <span className="font-semibold text-text-primary">ComplianceGuard</span>
+              <span className="font-semibold text-text-primary">Security Compliance</span>
             </div>
           </div>
           <div className="card-modern">

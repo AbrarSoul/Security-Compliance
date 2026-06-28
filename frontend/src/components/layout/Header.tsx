@@ -16,7 +16,8 @@ export function Header({ title, subtitle }: { title: string; subtitle?: string }
       /* ignore */
     }
     clearSession();
-    router.push("/login");
+    router.replace("/login");
+    router.refresh();
   }
 
   const initials = user?.full_name

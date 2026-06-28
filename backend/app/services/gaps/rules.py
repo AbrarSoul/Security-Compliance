@@ -11,6 +11,7 @@ from app.models.compliance_model import ComplianceModel
 from app.models.compliance_policy import CompliancePolicy
 from app.models.compliance_rule import ComplianceRule
 from app.models.execution_request import ExecutionRequest
+from app.models.gaira import AIApplication
 from app.models.user import User
 from app.models.user_role import UserRole
 from app.repositories.rbac_repository import RbacRepository
@@ -23,6 +24,9 @@ from app.services.gaps.constants import (
     GAP_INACTIVE_POLICY,
     GAP_MISSING_AUDIT_LOGS,
     GAP_MISSING_ENCRYPTION,
+    GAP_MISSING_GAIRA_ASSESSMENT,
+    GAP_INCOMPLETE_ROAIA_CONTEXT,
+    GAP_MODEL_LOGGING_DISABLED,
     GAP_NO_ENABLED_RULES,
     GAP_RISKY_MODEL,
     GAP_UNAPPROVED_EXTERNAL_API,
@@ -348,6 +352,84 @@ async def detect_unapproved_models(ctx: GapRuleContext) -> list[GapFinding]:
     ]
 
 
+async def detect_missing_gaira_assessments(ctx: GapRuleContext) -> list[GapFinding]:
+    """NIST MAP-5.1 / GOVERN-1.6: active AI apps without completed GAIRA assessment."""
+    result = await ctx.db.execute(
+        select(AIApplication).where(
+            AIApplication.is_active.is_(True),
+            AIApplication.gaira_status != "done",
+        )
+    )
+    return [
+        GapFinding(
+            gap_type=GAP_MISSING_GAIRA_ASSESSMENT,
+            category=CATEGORY_GOVERNANCE,
+            severity=SEVERITY_HIGH if app.risk_level in ("high", "critical") else SEVERITY_MEDIUM,
+            title=f"Missing GAIRA assessment: {app.name}",
+            description=(
+                f"AI application '{app.name}' is active but GAIRA status is '{app.gaira_status}'. "
+                "NIST MAP function requires documented context and impact assessment."
+            ),
+            recommendation="Complete GAIRA Light or Comprehensive assessment and submit before deployment.",
+            resource_type="ai_application",
+            resource_id=app.id,
+            metadata={
+                "gaira_status": app.gaira_status,
+                "nist_refs": ["MAP-5.1", "GOVERN-1.6", "MANAGE-1.1"],
+            },
+        )
+        for app in result.scalars().all()
+    ]
+
+
+async def detect_incomplete_roaia_context(ctx: GapRuleContext) -> list[GapFinding]:
+    """NIST MAP-1.1: ROAIA entries missing purpose or scope documentation."""
+    result = await ctx.db.execute(
+        select(AIApplication).where(
+            AIApplication.is_active.is_(True),
+            (AIApplication.purpose.is_(None)) | (AIApplication.purpose == ""),
+        )
+    )
+    return [
+        GapFinding(
+            gap_type=GAP_INCOMPLETE_ROAIA_CONTEXT,
+            category=CATEGORY_GOVERNANCE,
+            severity=SEVERITY_MEDIUM,
+            title=f"Incomplete ROAIA context: {app.name}",
+            description=f"AI application '{app.name}' has no documented purpose or deployment context.",
+            recommendation="Document intended purpose, audience, and scope in the ROAIA application record.",
+            resource_type="ai_application",
+            resource_id=app.id,
+            metadata={"nist_refs": ["MAP-1.1", "MAP-1.4"]},
+        )
+        for app in result.scalars().all()
+    ]
+
+
+async def detect_model_logging_disabled(ctx: GapRuleContext) -> list[GapFinding]:
+    """NIST MEASURE-2.4: production models without logging enabled."""
+    result = await ctx.db.execute(
+        select(ComplianceModel).where(
+            ComplianceModel.is_active.is_(True),
+            ComplianceModel.logging_enabled.is_(False),
+        )
+    )
+    return [
+        GapFinding(
+            gap_type=GAP_MODEL_LOGGING_DISABLED,
+            category=CATEGORY_MONITORING,
+            severity=SEVERITY_HIGH,
+            title=f"Production monitoring disabled: {model.name}",
+            description=f"Model '{model.name}' is active but logging/monitoring is disabled.",
+            recommendation="Enable logging on active models to support NIST MEASURE production monitoring.",
+            resource_type="compliance_model",
+            resource_id=model.id,
+            metadata={"code": model.code, "nist_refs": ["MEASURE-2.4", "MANAGE-4.1"]},
+        )
+        for model in result.scalars().all()
+    ]
+
+
 ALL_GAP_DETECTORS = [
     detect_missing_encryption,
     detect_missing_audit_logs,
@@ -358,4 +440,7 @@ ALL_GAP_DETECTORS = [
     detect_risky_models,
     detect_unapproved_external_apis,
     detect_unapproved_models,
+    detect_missing_gaira_assessments,
+    detect_incomplete_roaia_context,
+    detect_model_logging_disabled,
 ]

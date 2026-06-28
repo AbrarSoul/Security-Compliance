@@ -6,6 +6,8 @@ from sqlalchemy import Boolean, DateTime, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.user_approval import APPROVAL_APPROVED
+
 from app.db.base import Base
 
 if TYPE_CHECKING:
@@ -27,6 +29,9 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    approval_status: Mapped[str] = mapped_column(
+        String(32), default=APPROVAL_APPROVED, nullable=False, index=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

@@ -46,7 +46,20 @@ async def test_signup_login_me_logout_flow(client: AsyncClient, strong_password:
         pytest.skip("Database not available")
     _skip_if_no_db(signup)
     assert signup.status_code == 201, signup.text
-    tokens = signup.json()
+    pending = signup.json()
+    assert pending["approval_status"] == "pending"
+    assert "message" in pending
+
+    from tests.helpers.integration import approve_user
+
+    await approve_user(email, "user")
+
+    login = await client.post(
+        "/api/v1/auth/login",
+        json={"email": email, "password": strong_password},
+    )
+    assert login.status_code == 200, login.text
+    tokens = login.json()
     assert "access_token" in tokens
     assert "refresh_token" in tokens
     assert tokens["user"]["email"] == email

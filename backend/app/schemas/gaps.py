@@ -6,6 +6,11 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class FrameworkRefResponse(BaseModel):
+    framework: str
+    control_id: str
+
+
 class ComplianceGapResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -23,6 +28,7 @@ class ComplianceGapResponse(BaseModel):
     resource_type: str | None
     resource_id: UUID | None
     metadata_json: dict | None
+    framework_refs: list[FrameworkRefResponse] = Field(default_factory=list)
     detected_at: datetime
     resolved_at: datetime | None
 
@@ -70,5 +76,6 @@ class GapDashboardResponse(BaseModel):
     open_total: int
     by_severity: dict[str, int]
     by_category: dict[str, int]
+    by_framework: dict[str, int] = Field(default_factory=dict)
     posture_score: int
     last_analyzed_at: datetime | None

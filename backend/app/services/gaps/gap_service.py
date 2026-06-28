@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.compliance_gap import ComplianceGap, GapAnalysisRun
 from app.repositories.gap_repository import GapRepository
 from app.services.audit_service import AuditService
+from app.services.compliance.framework_mappings import attach_framework_refs_to_metadata
 from app.services.gaps.constants import (
     GAP_STATUS_ACKNOWLEDGED,
     GAP_STATUS_OPEN,
@@ -59,7 +60,9 @@ class GapAnalysisService:
                 fingerprint=finding.fingerprint(),
                 resource_type=finding.resource_type,
                 resource_id=finding.resource_id,
-                metadata_json=finding.metadata or None,
+                metadata_json=attach_framework_refs_to_metadata(
+                    finding.gap_type, finding.metadata or None
+                ),
             )
             await self.repo.create_gap(gap)
             gaps.append(gap)

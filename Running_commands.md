@@ -46,3 +46,12 @@ npm run dev
 ```
 
 App: http://localhost:3000
+
+If you see `Cannot find module './305.js'` (or similar) after logout or hot reload, stop the dev server (Ctrl+C), then:
+
+```bash
+cd frontend
+npm run dev:clean
+```
+
+Do not run `npm run build` while `npm run dev` is already running — that corrupts the `.next` cache.

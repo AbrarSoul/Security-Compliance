@@ -16,7 +16,9 @@ from app.schemas.gaps import (
     GapListResponse,
     GapRunListResponse,
 )
+from app.services.compliance.framework_mappings import aggregate_by_framework
 from app.services.gaps.gap_service import GapAnalysisService
+from app.services.gaps.response_helpers import gap_to_response
 
 router = APIRouter(prefix="/gaps", tags=["compliance-gaps"])
 
@@ -36,7 +38,7 @@ async def run_gap_analysis(
     posture = (run.summary_json or {}).get("posture_score") if run else None
     return GapAnalysisRunDetailResponse(
         **GapAnalysisRunResponse.model_validate(run).model_dump(),
-        gaps=[ComplianceGapResponse.model_validate(g) for g in (run.gaps if run else [])],
+        gaps=[gap_to_response(g) for g in (run.gaps if run else [])],
         posture_score=posture,
     )
 
@@ -55,6 +57,7 @@ async def gap_dashboard(
             open_total=0,
             by_severity={},
             by_category={},
+            by_framework={},
             posture_score=100,
             last_analyzed_at=None,
         )
@@ -68,10 +71,11 @@ async def gap_dashboard(
 
     return GapDashboardResponse(
         latest_run=GapAnalysisRunResponse.model_validate(run),
-        open_gaps=[ComplianceGapResponse.model_validate(g) for g in gaps],
+        open_gaps=[gap_to_response(g) for g in gaps],
         open_total=total,
         by_severity=by_severity,
         by_category=by_category,
+        by_framework=aggregate_by_framework(gaps),
         posture_score=(run.summary_json or {}).get("posture_score", 100),
         last_analyzed_at=run.completed_at or run.started_at,
     )
@@ -92,7 +96,7 @@ async def list_gaps(
     )
     posture = (run.summary_json or {}).get("posture_score") if run else None
     return GapListResponse(
-        items=[ComplianceGapResponse.model_validate(g) for g in gaps],
+        items=[gap_to_response(g) for g in gaps],
         total=total,
         limit=limit,
         offset=offset,
@@ -114,7 +118,7 @@ async def gap_history(
         gap_type=gap_type, severity=severity, limit=limit, offset=offset
     )
     return GapListResponse(
-        items=[ComplianceGapResponse.model_validate(g) for g in items],
+        items=[gap_to_response(g) for g in items],
         total=total,
         limit=limit,
         offset=offset,
@@ -149,7 +153,7 @@ async def get_analysis_run(
     posture = (run.summary_json or {}).get("posture_score")
     return GapAnalysisRunDetailResponse(
         **GapAnalysisRunResponse.model_validate(run).model_dump(),
-        gaps=[ComplianceGapResponse.model_validate(g) for g in run.gaps],
+        gaps=[gap_to_response(g) for g in run.gaps],
         posture_score=posture,
     )
 
@@ -163,7 +167,7 @@ async def get_gap(
     gap = await service.get_gap(gap_id)
     if gap is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gap not found")
-    return ComplianceGapResponse.model_validate(gap)
+    return gap_to_response(gap)
 
 
 @router.post("/{gap_id}/acknowledge", response_model=ComplianceGapResponse)
@@ -176,7 +180,7 @@ async def acknowledge_gap(
         gap = await service.acknowledge_gap(gap_id, auth.user.id)
     except ValueError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gap not found") from None
-    return ComplianceGapResponse.model_validate(gap)
+    return gap_to_response(gap)
 
 
 @router.post("/{gap_id}/resolve", response_model=ComplianceGapResponse)
@@ -189,4 +193,4 @@ async def resolve_gap(
         gap = await service.resolve_gap(gap_id, auth.user.id)
     except ValueError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gap not found") from None
-    return ComplianceGapResponse.model_validate(gap)
+    return gap_to_response(gap)

@@ -7,7 +7,6 @@ import { AuthShell } from "@/components/auth/AuthShell";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { authApi, ApiError } from "@/lib/api";
-import { saveSession } from "@/lib/auth";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -22,13 +21,12 @@ export default function SignupPage() {
     setError("");
     setLoading(true);
     try {
-      const tokens = await authApi.signup({
+      const result = await authApi.signup({
         email,
         password,
         full_name: fullName || undefined,
       });
-      saveSession(tokens);
-      router.push("/");
+      router.push(`/login?pending=1&email=${encodeURIComponent(result.email)}`);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Signup failed");
     } finally {
@@ -39,7 +37,7 @@ export default function SignupPage() {
   return (
     <AuthShell
       title="Create account"
-      subtitle="Password needs upper, lower, and a digit (8+ characters)"
+      subtitle="An administrator must approve your account before you can sign in"
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && <Alert variant="error">{error}</Alert>}
@@ -75,9 +73,12 @@ export default function SignupPage() {
             className="input-field"
             placeholder="••••••••"
           />
+          <p className="mt-1 text-xs text-text-muted">
+            Password needs upper, lower, and a digit (8+ characters)
+          </p>
         </div>
         <Button type="submit" className="w-full" loading={loading}>
-          Create account
+          Submit registration
         </Button>
       </form>
       <p className="mt-6 text-center text-sm text-text-muted">

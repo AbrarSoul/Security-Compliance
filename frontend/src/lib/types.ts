@@ -3,6 +3,7 @@ export interface User {
   email: string;
   full_name: string | null;
   is_active: boolean;
+  approval_status?: string;
   created_at: string;
 }
 
@@ -17,6 +18,20 @@ export interface TokenResponse {
   token_type: string;
   expires_in: number;
   user: User;
+}
+
+export interface SignupPendingResponse {
+  message: string;
+  approval_status: string;
+  email: string;
+}
+
+export interface PendingUser {
+  id: string;
+  email: string;
+  full_name: string | null;
+  approval_status: string;
+  created_at: string;
 }
 
 export interface FileMetadata {

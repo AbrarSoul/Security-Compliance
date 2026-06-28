@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -42,6 +42,14 @@ class RbacRepository:
         role = await self.get_role_by_name(role_name)
         if role is None:
             return None
+        return await self.assign_role_to_user(user_id, role.id)
+
+    async def set_user_role(self, user_id: UUID, role_name: str) -> UserRole | None:
+        """Replace all roles for a user with a single role."""
+        role = await self.get_role_by_name(role_name)
+        if role is None:
+            return None
+        await self.db.execute(delete(UserRole).where(UserRole.user_id == user_id))
         return await self.assign_role_to_user(user_id, role.id)
 
     async def get_user_role_names(self, user_id: UUID) -> list[str]:

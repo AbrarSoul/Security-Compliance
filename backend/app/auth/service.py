@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.schemas import SignupRequest, TokenResponse, UserResponse
+from app.auth.schemas import SignupPendingResponse, SignupRequest, TokenResponse, UserResponse
 from app.auth.security import (
     create_access_token,
     create_refresh_token,
@@ -16,6 +16,7 @@ from app.auth.security import (
 from app.core.audit_actions import AuditAction
 from app.core import audit_severity
 from app.core.config import get_settings
+from app.core.user_approval import APPROVAL_APPROVED, APPROVAL_PENDING, APPROVAL_REJECTED
 from app.models.user import User
 from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.repositories.user_repository import UserRepository
@@ -29,6 +30,18 @@ def _hash_refresh_token(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()
 
 
+def _login_blocked_detail(user: User) -> str | None:
+    if user.approval_status == APPROVAL_PENDING:
+        return "Account pending admin approval"
+    if user.approval_status == APPROVAL_REJECTED:
+        return "Registration was rejected by an administrator"
+    if not user.is_active:
+        return "Account is inactive"
+    if user.approval_status != APPROVAL_APPROVED:
+        return "Account is not approved"
+    return None
+
+
 class AuthService:
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -36,7 +49,7 @@ class AuthService:
         self.refresh_tokens = RefreshTokenRepository(db)
         self.audit = AuditService(db)
 
-    async def signup(self, data: SignupRequest) -> TokenResponse:
+    async def signup(self, data: SignupRequest) -> SignupPendingResponse:
         if await self.users.email_exists(data.email):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
@@ -47,18 +60,26 @@ class AuthService:
             email=data.email,
             password_hash=hash_password(data.password),
             full_name=data.full_name,
+            is_active=False,
+            approval_status=APPROVAL_PENDING,
         )
-        await RbacService(self.db).assign_default_role(user.id)
         await self.audit.log(
             AuditAction.AUTH_SIGNUP,
             user_id=user.id,
             resource_type="user",
             resource_id=user.id,
             severity=audit_severity.INFO,
-            status="success",
-            metadata={"email": user.email},
+            status="pending",
+            metadata={"email": user.email, "approval_status": APPROVAL_PENDING},
         )
-        return await self._issue_tokens(user)
+        return SignupPendingResponse(
+            message=(
+                "Registration submitted. An administrator must approve your account "
+                "before you can sign in."
+            ),
+            approval_status=APPROVAL_PENDING,
+            email=user.email,
+        )
 
     async def authenticate(self, email: str, password: str) -> User | None:
         user = await self.users.get_by_email(email)
@@ -81,7 +102,8 @@ class AuthService:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid credentials",
             )
-        if not user.is_active:
+        blocked = _login_blocked_detail(user)
+        if blocked:
             await self.audit.log(
                 AuditAction.AUTH_LOGIN_FAILED,
                 user_id=user.id,
@@ -89,11 +111,14 @@ class AuthService:
                 resource_id=user.id,
                 severity=audit_severity.MEDIUM,
                 status="failure",
-                metadata={"email": user.email, "reason": "inactive_account"},
+                metadata={
+                    "email": user.email,
+                    "reason": user.approval_status,
+                },
             )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Account is inactive",
+                detail=blocked,
             )
         await self.audit.log(
             AuditAction.AUTH_LOGIN,
@@ -131,10 +156,11 @@ class AuthService:
             )
 
         user = await self.users.get_by_id(stored.user_id)  # type: ignore[union-attr]
-        if user is None or not user.is_active:
+        blocked = None if user is None else _login_blocked_detail(user)
+        if blocked:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Account is inactive",
+                detail=blocked,
             )
 
         await self.refresh_tokens.revoke(stored)

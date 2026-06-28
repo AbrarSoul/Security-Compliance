@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePendingRegistrationCount } from "@/hooks/usePendingRegistrationCount";
 import { PERMS } from "@/lib/permissions";
 import {
   IconDashboard,
@@ -17,6 +18,7 @@ type NavItem = {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   show?: boolean;
+  badgeCount?: number;
 };
 
 function NavSection({ title, items }: { title: string; items: NavItem[] }) {
@@ -51,6 +53,14 @@ function NavSection({ title, items }: { title: string; items: NavItem[] }) {
               }`}
             />
             {link.label}
+            {link.badgeCount != null && link.badgeCount > 0 && (
+              <span
+                className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-accent-red px-1.5 text-[10px] font-bold leading-none text-white"
+                aria-label={`${link.badgeCount} pending registration${link.badgeCount === 1 ? "" : "s"}`}
+              >
+                {link.badgeCount > 99 ? "99+" : link.badgeCount}
+              </span>
+            )}
           </Link>
         );
       })}
@@ -60,6 +70,8 @@ function NavSection({ title, items }: { title: string; items: NavItem[] }) {
 
 export function Sidebar() {
   const { hasPermission, hasAnyPermission, roles, user } = useAuth();
+  const canManageUsers = hasPermission(PERMS.USER_MANAGE);
+  const pendingRegistrations = usePendingRegistrationCount(canManageUsers);
 
   const platform: NavItem[] = [
     { href: "/", label: "Overview", icon: IconDashboard },
@@ -93,6 +105,25 @@ export function Sidebar() {
   ];
 
   const governance: NavItem[] = [
+    {
+      href: "/users",
+      label: "Registrations",
+      icon: IconShield,
+      show: canManageUsers,
+      badgeCount: pendingRegistrations,
+    },
+    {
+      href: "/compliance",
+      label: "Compliance posture",
+      icon: IconShield,
+      show: hasAnyPermission(PERMS.GAP_READ, PERMS.GAP_READ_ALL, PERMS.GAIRA_READ, PERMS.GAIRA_READ_ALL),
+    },
+    {
+      href: "/nist-ai-rmf",
+      label: "NIST AI RMF",
+      icon: IconShield,
+      show: hasAnyPermission(PERMS.GAP_READ, PERMS.GAP_READ_ALL, PERMS.GAIRA_READ, PERMS.GAIRA_READ_ALL),
+    },
     {
       href: "/gaira",
       label: "GAIRA",
@@ -152,10 +183,10 @@ export function Sidebar() {
           </div>
           <div>
             <h1 className="text-base font-semibold tracking-tight text-text-primary">
-              ComplianceGuard
+              Security Compliance
             </h1>
             <p className="text-[11px] font-medium uppercase tracking-widest text-text-muted">
-              Security Sandbox
+              GPT-LAB SANDBOX
             </p>
           </div>
         </div>

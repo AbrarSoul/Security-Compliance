@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { gapsApi } from "@/lib/api";
 import { PERMS } from "@/lib/permissions";
 import type { ComplianceGap, GapDashboard } from "@/lib/types/gaps";
+import { FRAMEWORK_LABELS } from "@/lib/types/compliancePosture";
 import { formatDate, severityVariant } from "@/lib/utils";
 
 function severityBadge(severity: string) {
@@ -30,6 +31,7 @@ function GapAnalysisContent() {
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [severityFilter, setSeverityFilter] = useState("");
+  const [frameworkFilter, setFrameworkFilter] = useState("");
   const [tab, setTab] = useState<"open" | "history">("open");
 
   const load = useCallback(async () => {
@@ -78,6 +80,14 @@ function GapAnalysisContent() {
   }
 
   const gaps = tab === "open" ? dashboard?.open_gaps ?? [] : history;
+  const filteredGaps = gaps.filter((gap) => {
+    if (!frameworkFilter) return true;
+    return gap.framework_refs?.some((ref) => ref.framework === frameworkFilter);
+  });
+
+  const frameworkOptions = Object.entries(dashboard?.by_framework ?? {}).sort(
+    ([, a], [, b]) => b - a
+  );
 
   return (
     <>
@@ -89,18 +99,35 @@ function GapAnalysisContent() {
         {error && <Alert variant="error">{error}</Alert>}
 
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <FormField label="Severity filter">
-            <Select
-              value={severityFilter}
-              onChange={(e) => setSeverityFilter(e.target.value)}
-            >
-              <option value="">All</option>
-              <option value="critical">Critical</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </Select>
-          </FormField>
+          <div className="flex flex-wrap gap-4">
+            <FormField label="Severity filter">
+              <Select
+                value={severityFilter}
+                onChange={(e) => setSeverityFilter(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </Select>
+            </FormField>
+            {tab === "open" && frameworkOptions.length > 0 && (
+              <FormField label="Framework">
+                <Select
+                  value={frameworkFilter}
+                  onChange={(e) => setFrameworkFilter(e.target.value)}
+                >
+                  <option value="">All frameworks</option>
+                  {frameworkOptions.map(([id, count]) => (
+                    <option key={id} value={id}>
+                      {FRAMEWORK_LABELS[id] ?? id} ({count})
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+            )}
+          </div>
           <div className="flex gap-2">
             <Button
               variant={tab === "open" ? "primary" : "secondary"}
@@ -155,9 +182,13 @@ function GapAnalysisContent() {
                   ? "No open gaps. Run analysis to scan your compliance posture."
                   : "No historical gap records."}
               </Card>
+            ) : filteredGaps.length === 0 ? (
+              <Card className="p-8 text-center text-text-muted">
+                No gaps match the selected framework filter.
+              </Card>
             ) : (
               <div className="space-y-4">
-                {gaps.map((gap) => (
+                {filteredGaps.map((gap) => (
                   <Card key={gap.id} className="p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
@@ -167,6 +198,15 @@ function GapAnalysisContent() {
                           <Badge variant="neutral">{gap.category}</Badge>
                           <Badge variant="neutral">{gap.gap_type.replace(/_/g, " ")}</Badge>
                         </div>
+                        {(gap.framework_refs?.length ?? 0) > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {gap.framework_refs.map((ref) => (
+                              <Badge key={`${ref.framework}-${ref.control_id}`} variant="neutral">
+                                {FRAMEWORK_LABELS[ref.framework] ?? ref.framework}: {ref.control_id}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                         <p className="mt-2 text-sm text-text-muted">{gap.description}</p>
                         <p className="mt-3 rounded-lg border border-border-accent bg-primary/10 px-3 py-2 text-sm text-text-secondary">
                           <span className="font-semibold text-primary">Remediation: </span>

@@ -7,6 +7,8 @@ class AuditAction:
     AUTH_LOGIN = "auth.login"
     AUTH_LOGIN_FAILED = "auth.login_failed"
     AUTH_LOGOUT = "auth.logout"
+    USER_APPROVED = "user.approved"
+    USER_REJECTED = "user.rejected"
 
     # Files
     FILE_UPLOADED = "file.uploaded"

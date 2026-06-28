@@ -1,3 +1,8 @@
+export type FrameworkRef = {
+  framework: string;
+  control_id: string;
+};
+
 export type ComplianceGap = {
   id: string;
   analysis_run_id: string;
@@ -13,6 +18,7 @@ export type ComplianceGap = {
   resource_type: string | null;
   resource_id: string | null;
   metadata_json: Record<string, unknown> | null;
+  framework_refs: FrameworkRef[];
   detected_at: string;
   resolved_at: string | null;
 };
@@ -37,6 +43,7 @@ export type GapDashboard = {
   open_total: number;
   by_severity: Record<string, number>;
   by_category: Record<string, number>;
+  by_framework: Record<string, number>;
   posture_score: number;
   last_analyzed_at: string | null;
 };
