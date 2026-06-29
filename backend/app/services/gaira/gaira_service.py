@@ -10,7 +10,15 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.gaira import AIApplication, GairaAssessment
-from app.repositories.compliance_model_repository import ComplianceModelRepository
+from app.core.audit_actions import AuditAction
+from app.core import audit_severity
+from app.core.gaira_registration import (
+    REGISTRATION_APPROVED,
+    REGISTRATION_PENDING_ADMIN,
+    REGISTRATION_PENDING_AUDITOR,
+    REGISTRATION_REJECTED,
+)
+
 from app.repositories.gaira_repository import GairaRepository
 from app.repositories.scan_repository import ScanRepository
 from app.services.gaira.constants import (
@@ -25,6 +33,15 @@ from app.services.gaira.constants import (
     STATUS_SUBMITTED,
     STATUS_SUPERSEDED,
 )
+from app.repositories.compliance_model_repository import ComplianceModelRepository
+from app.services.audit_service import AuditService
+from app.services.notifications.constants import (
+    SEVERITY_HIGH,
+    SEVERITY_INFO,
+    SEVERITY_WARNING,
+    TYPE_GAIRA_APPLICATION,
+)
+from app.services.notifications.notification_service import NotificationService
 from app.services.gaira.engine import compute_assessment, normalize_risk_level
 from app.services.gaira.framework import GairaFramework, get_gaira_framework
 
@@ -36,6 +53,8 @@ class GairaService:
         self.scans = ScanRepository(db)
         self.models = ComplianceModelRepository(db)
         self.framework = get_gaira_framework()
+        self.audit = AuditService(db)
+        self.notifications = NotificationService(db)
 
     def get_framework(self) -> GairaFramework:
         return self.framework
@@ -45,7 +64,11 @@ class GairaService:
         *,
         payload: dict,
         created_by_user_id: UUID,
+        auto_approve: bool = False,
     ) -> AIApplication:
+        registration_status = REGISTRATION_APPROVED if auto_approve else REGISTRATION_PENDING_AUDITOR
+        is_active = auto_approve
+
         application = AIApplication(
             name=payload["name"],
             code=payload.get("code"),
@@ -64,8 +87,43 @@ class GairaService:
             gaira_status=GAIRA_STATUS_NONE,
             compliance_check_status=CHECK_STATUS_NONE,
             dpia_status=CHECK_STATUS_NONE,
+            registration_status=registration_status,
+            is_active=is_active,
+            approved_by_user_id=created_by_user_id if auto_approve else None,
+            approved_at=datetime.now(UTC) if auto_approve else None,
         )
-        return await self.repo.create_application(application)
+        application = await self.repo.create_application(application)
+
+        await self.audit.log(
+            AuditAction.GAIRA_APPLICATION_REGISTERED,
+            user_id=created_by_user_id,
+            resource_type="ai_application",
+            resource_id=application.id,
+            severity=audit_severity.INFO,
+            status="success",
+            metadata={
+                "name": application.name,
+                "registration_status": registration_status,
+                "auto_approve": auto_approve,
+            },
+        )
+
+        if not auto_approve:
+            await self.notifications.notify_role(
+                "auditor",
+                notification_type=TYPE_GAIRA_APPLICATION,
+                severity=SEVERITY_HIGH,
+                title="New AI application registration",
+                message=(
+                    f"'{application.name}' was registered and is awaiting auditor review."
+                ),
+                event_type=AuditAction.GAIRA_APPLICATION_REGISTERED,
+                resource_type="ai_application",
+                resource_id=application.id,
+                exclude_user_id=created_by_user_id,
+            )
+
+        return application
 
     async def update_application(self, application_id: UUID, payload: dict) -> AIApplication:
         application = await self.repo.get_application(application_id)
@@ -89,7 +147,6 @@ class GairaService:
             "risk_level",
             "deployed_at",
             "next_assessment_at",
-            "is_active",
             "metadata_json",
         ):
             if field in payload and payload[field] is not None:
@@ -105,6 +162,204 @@ class GairaService:
         return await self.repo.list_applications(
             active_only=active_only, limit=limit, offset=offset
         )
+
+    async def list_pending_auditor(
+        self, *, limit: int = 100, offset: int = 0
+    ) -> tuple[list[AIApplication], int]:
+        return await self.repo.list_by_registration_status(
+            REGISTRATION_PENDING_AUDITOR, limit=limit, offset=offset
+        )
+
+    async def list_pending_admin(
+        self, *, limit: int = 100, offset: int = 0
+    ) -> tuple[list[AIApplication], int]:
+        return await self.repo.list_by_registration_status(
+            REGISTRATION_PENDING_ADMIN, limit=limit, offset=offset
+        )
+
+    async def count_pending_auditor(self) -> int:
+        return await self.repo.count_by_registration_status(REGISTRATION_PENDING_AUDITOR)
+
+    async def count_pending_admin(self) -> int:
+        return await self.repo.count_by_registration_status(REGISTRATION_PENDING_ADMIN)
+
+    async def submit_auditor_feedback(
+        self,
+        application_id: UUID,
+        *,
+        feedback: str,
+        auditor_user_id: UUID,
+    ) -> AIApplication:
+        application = await self.repo.get_application(application_id)
+        if application is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+        if application.registration_status != REGISTRATION_PENDING_AUDITOR:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only applications awaiting auditor review can receive feedback",
+            )
+
+        application.registration_status = REGISTRATION_PENDING_ADMIN
+        application.auditor_feedback = feedback.strip()
+        application.auditor_reviewed_by_user_id = auditor_user_id
+        application.auditor_reviewed_at = datetime.now(UTC)
+        application = await self.repo.update_application(application)
+
+        await self.audit.log(
+            AuditAction.GAIRA_APPLICATION_REVIEWED,
+            user_id=auditor_user_id,
+            resource_type="ai_application",
+            resource_id=application.id,
+            severity=audit_severity.INFO,
+            status="success",
+            metadata={"name": application.name},
+        )
+
+        await self.notifications.notify_role(
+            "admin",
+            notification_type=TYPE_GAIRA_APPLICATION,
+            severity=SEVERITY_HIGH,
+            title="AI application ready for admin decision",
+            message=(
+                f"Auditor reviewed '{application.name}'. "
+                "Open GAIRA approvals to approve or reject the registration."
+            ),
+            event_type=AuditAction.GAIRA_APPLICATION_REVIEWED,
+            resource_type="ai_application",
+            resource_id=application.id,
+            exclude_user_id=auditor_user_id,
+        )
+
+        if application.created_by_user_id:
+            await self.notifications.notify_user(
+                application.created_by_user_id,
+                notification_type=TYPE_GAIRA_APPLICATION,
+                severity=SEVERITY_INFO,
+                title="Auditor review completed",
+                message=(
+                    f"Your AI application '{application.name}' was reviewed by an auditor "
+                    "and is now awaiting admin approval."
+                ),
+                event_type=AuditAction.GAIRA_APPLICATION_REVIEWED,
+                resource_type="ai_application",
+                resource_id=application.id,
+            )
+
+        return application
+
+    async def approve_application(
+        self,
+        application_id: UUID,
+        *,
+        admin_user_id: UUID,
+    ) -> AIApplication:
+        application = await self.repo.get_application(application_id)
+        if application is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+        if application.registration_status != REGISTRATION_PENDING_ADMIN:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only applications awaiting admin approval can be approved",
+            )
+
+        application.registration_status = REGISTRATION_APPROVED
+        application.is_active = True
+        application.approved_by_user_id = admin_user_id
+        application.approved_at = datetime.now(UTC)
+        application.rejected_by_user_id = None
+        application.rejected_at = None
+        application.rejection_reason = None
+        application = await self.repo.update_application(application)
+
+        await self.audit.log(
+            AuditAction.GAIRA_APPLICATION_APPROVED,
+            user_id=admin_user_id,
+            resource_type="ai_application",
+            resource_id=application.id,
+            severity=audit_severity.INFO,
+            status="success",
+            metadata={"name": application.name},
+        )
+
+        if application.created_by_user_id:
+            await self.notifications.notify_user(
+                application.created_by_user_id,
+                notification_type=TYPE_GAIRA_APPLICATION,
+                severity=SEVERITY_INFO,
+                title="AI application approved",
+                message=(
+                    f"Your AI application '{application.name}' was approved. "
+                    "You can now start GAIRA assessments."
+                ),
+                event_type=AuditAction.GAIRA_APPLICATION_APPROVED,
+                resource_type="ai_application",
+                resource_id=application.id,
+            )
+
+        return application
+
+    async def reject_application(
+        self,
+        application_id: UUID,
+        *,
+        reason: str,
+        admin_user_id: UUID,
+    ) -> AIApplication:
+        application = await self.repo.get_application(application_id)
+        if application is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+        if application.registration_status not in {
+            REGISTRATION_PENDING_ADMIN,
+            REGISTRATION_PENDING_AUDITOR,
+        }:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only pending applications can be rejected",
+            )
+
+        application.registration_status = REGISTRATION_REJECTED
+        application.is_active = False
+        application.rejected_by_user_id = admin_user_id
+        application.rejected_at = datetime.now(UTC)
+        application.rejection_reason = reason.strip()
+        application = await self.repo.update_application(application)
+
+        await self.audit.log(
+            AuditAction.GAIRA_APPLICATION_REJECTED,
+            user_id=admin_user_id,
+            resource_type="ai_application",
+            resource_id=application.id,
+            severity=audit_severity.MEDIUM,
+            status="success",
+            metadata={"name": application.name, "reason": application.rejection_reason},
+        )
+
+        if application.created_by_user_id:
+            await self.notifications.notify_user(
+                application.created_by_user_id,
+                notification_type=TYPE_GAIRA_APPLICATION,
+                severity=SEVERITY_WARNING,
+                title="AI application rejected",
+                message=(
+                    f"Your AI application '{application.name}' was rejected. "
+                    f"Reason: {application.rejection_reason}"
+                ),
+                event_type=AuditAction.GAIRA_APPLICATION_REJECTED,
+                resource_type="ai_application",
+                resource_id=application.id,
+            )
+
+        return application
+
+    def _ensure_registration_approved(self, application: AIApplication) -> None:
+        if application.registration_status != REGISTRATION_APPROVED:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    "This AI application must be approved before assessments can begin. "
+                    f"Current registration status: {application.registration_status}."
+                ),
+            )
 
     async def start_assessment(
         self,
@@ -123,6 +378,8 @@ class GairaService:
         application = await self.repo.get_application(application_id)
         if application is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+
+        self._ensure_registration_approved(application)
 
         if scan_id is not None:
             scan = await self.scans.get_by_id(scan_id)

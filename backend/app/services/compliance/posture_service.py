@@ -32,9 +32,10 @@ def _framework_status_from_gaps(gaps: list[ComplianceGap]) -> str:
 
 
 def _nist_overall_status(summary: dict[str, int]) -> str:
-    if summary.get("not_met", 0) > 0:
+    """Compliance posture: violations drive non-compliance; setup gaps do not."""
+    if summary.get("violations", 0) > 0:
         return "not_met"
-    if summary.get("partial", 0) > 0:
+    if summary.get("alignment_gaps", 0) > 0 or summary.get("partial", 0) > 0:
         return "partial"
     if summary.get("met", 0) > 0:
         return "met"
@@ -74,35 +75,61 @@ class CompliancePostureService:
         ]
         gaira_gaps = [g for g in gaps if gap_belongs_to_framework(g, FRAMEWORK_GAIRA)]
 
-        nist_not_met_controls = [
+        nist_violation_controls = [
+            c for c in nist_profile["controls"] if c.get("finding_kind") == "violation"
+        ]
+        nist_setup_gap_controls = [
             c
             for c in nist_profile["controls"]
-            if c["status"] in ("not_met", "partial")
-        ][:15]
+            if c.get("finding_kind") == "alignment_gap"
+        ][:10]
 
         nist_gap_issues = [_gap_issue(g) for g in nist_gaps]
 
-        nist_control_issues = [
+        nist_violation_issues = [
             {
                 "id": c["id"],
                 "title": f"{c['id']}: {c['text'][:120]}{'…' if len(c['text']) > 120 else ''}",
-                "severity": "high" if c["status"] == "not_met" else "medium",
+                "severity": "high",
                 "remediation": (
                     "; ".join(c["evidence"])
                     if c["evidence"]
-                    else (c.get("notes") or "Review control requirements and platform evidence.")
+                    else (c.get("notes") or "Fix the active policy breach described in evidence.")
                 ),
-                "source": "nist_control",
+                "source": "nist_violation",
                 "gap_type": None,
                 "control_ids": [c["id"]],
                 "framework_refs": [{"framework": FRAMEWORK_NIST_AI_RMF, "control_id": c["id"]}],
                 "resource_type": None,
                 "resource_id": None,
             }
-            for c in nist_not_met_controls
+            for c in nist_violation_controls
         ]
 
-        nist_open_issues = (nist_gap_issues + nist_control_issues)[:20]
+        nist_setup_issues = [
+            {
+                "id": c["id"],
+                "title": f"{c['id']}: {c['text'][:120]}{'…' if len(c['text']) > 120 else ''}",
+                "severity": "medium",
+                "remediation": (
+                    "; ".join(c["evidence"])
+                    if c["evidence"]
+                    else (c.get("notes") or "Complete platform setup for this requirement.")
+                ),
+                "source": "nist_setup_gap",
+                "gap_type": None,
+                "control_ids": [c["id"]],
+                "framework_refs": [{"framework": FRAMEWORK_NIST_AI_RMF, "control_id": c["id"]}],
+                "resource_type": None,
+                "resource_id": None,
+            }
+            for c in nist_setup_gap_controls
+        ]
+
+        nist_open_issues = (nist_gap_issues + nist_violation_issues + nist_setup_issues)[:20]
+
+        violation_count = nist_profile["summary"].get("violations", 0)
+        setup_gap_count = nist_profile["summary"].get("alignment_gaps", 0)
 
         frameworks: list[dict[str, Any]] = [
             {
@@ -112,9 +139,11 @@ class CompliancePostureService:
                 "status": _nist_overall_status(nist_profile["summary"]),
                 "alignment_score": nist_profile["alignment_score"],
                 "summary": nist_profile["summary"],
-                "open_issue_count": len(nist_gaps) + nist_profile["summary"].get("not_met", 0),
+                "open_issue_count": len(nist_gaps) + violation_count,
                 "open_issues": nist_open_issues,
                 "detail_url": "/nist-ai-rmf",
+                "violations": violation_count,
+                "setup_gaps": setup_gap_count,
             },
             {
                 "id": FRAMEWORK_GAIRA,

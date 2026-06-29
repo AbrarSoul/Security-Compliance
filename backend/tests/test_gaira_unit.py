@@ -19,6 +19,7 @@ def test_parse_gaira_source_has_core_modules():
     modules = framework["modules"]
     assert "ai_risk_levels" in modules
     assert "gaira_light" in modules
+    assert "ai_act_four_questions" not in modules
     assert len(modules["ai_risk_levels"]["questions"]) >= 20
     assert len(modules["gaira_light"]["questions"]) >= 100
 

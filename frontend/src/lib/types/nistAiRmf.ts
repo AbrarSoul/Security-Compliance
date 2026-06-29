@@ -5,6 +5,16 @@ export type NistControlStatus =
   | "not_assessed"
   | "not_applicable";
 
+export type NistFindingKind =
+  | "satisfied"
+  | "violation"
+  | "alignment_gap"
+  | "improvement"
+  | "unchecked"
+  | "out_of_scope";
+
+export type NistComplianceStatus = "compliant" | "attention_needed" | "non_compliant";
+
 export interface NistControlCatalogItem {
   id: string;
   function: string;
@@ -45,6 +55,7 @@ export interface NistControlStatusItem {
   modules: string[];
   trustworthiness: string[];
   status: NistControlStatus;
+  finding_kind: NistFindingKind;
   evidence: string[];
   detail: Record<string, unknown>;
   notes?: string | null;
@@ -56,6 +67,8 @@ export interface NistFunctionSummary {
   not_met: number;
   not_assessed: number;
   not_applicable: number;
+  violations?: number;
+  alignment_gaps?: number;
 }
 
 export interface NistCurrentProfile {
@@ -64,9 +77,16 @@ export interface NistCurrentProfile {
   framework_version: string;
   evaluated_at: string;
   alignment_score: number;
+  compliance_status: NistComplianceStatus;
   summary: NistFunctionSummary & {
     total: number;
     automated_evaluations: number;
+    violations: number;
+    alignment_gaps: number;
+    evaluated_total: number;
+    progress_total: number;
+    base_score: number;
+    violation_deduction: number;
   };
   by_function: Record<string, NistFunctionSummary>;
   controls: NistControlStatusItem[];
@@ -76,11 +96,26 @@ export interface NistCurrentProfile {
 export const NIST_FUNCTIONS = ["GOVERN", "MAP", "MEASURE", "MANAGE"] as const;
 
 export const NIST_STATUS_LABELS: Record<NistControlStatus, string> = {
-  met: "Met",
+  met: "Satisfied",
   partial: "Partial",
   not_met: "Not met",
-  not_assessed: "Not assessed",
-  not_applicable: "N/A",
+  not_assessed: "Not checked yet",
+  not_applicable: "Out of scope",
+};
+
+export const NIST_FINDING_KIND_LABELS: Record<NistFindingKind, string> = {
+  satisfied: "Satisfied",
+  violation: "Violation",
+  alignment_gap: "Setup gap",
+  improvement: "Improve",
+  unchecked: "Not checked",
+  out_of_scope: "Out of scope",
+};
+
+export const NIST_COMPLIANCE_STATUS_LABELS: Record<NistComplianceStatus, string> = {
+  compliant: "Compliant",
+  attention_needed: "Setup in progress",
+  non_compliant: "Action needed",
 };
 
 export const NIST_STATUS_COLORS: Record<NistControlStatus, string> = {

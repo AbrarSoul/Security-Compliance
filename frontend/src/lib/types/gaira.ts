@@ -56,6 +56,12 @@ export interface AIApplication {
   dpia_status: string;
   deployed_at: string | null;
   next_assessment_at: string | null;
+  registration_status: string;
+  auditor_feedback: string | null;
+  auditor_reviewed_at: string | null;
+  approved_at: string | null;
+  rejection_reason: string | null;
+  rejected_at: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -131,3 +137,10 @@ export const RISK_LEVEL_OPTIONS = [
   "high",
   "very_high",
 ] as const;
+
+export const REGISTRATION_STATUS_LABELS: Record<string, string> = {
+  pending_auditor: "Awaiting auditor review",
+  pending_admin: "Awaiting admin approval",
+  approved: "Approved",
+  rejected: "Rejected",
+};

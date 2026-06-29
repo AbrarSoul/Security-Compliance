@@ -4,6 +4,8 @@ from typing import Literal
 from pydantic import Field, PostgresDsn, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app.services.files.supported_formats import DEFAULT_ALLOWED_EXTENSIONS
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -47,7 +49,7 @@ class Settings(BaseSettings):
     storage_local_path: str = Field(default="./uploads", alias="STORAGE_LOCAL_PATH")
     max_upload_size_mb: int = Field(default=50, alias="MAX_UPLOAD_SIZE_MB")
     allowed_file_extensions: str = Field(
-        default="csv,json,txt", alias="ALLOWED_FILE_EXTENSIONS"
+        default=DEFAULT_ALLOWED_EXTENSIONS, alias="ALLOWED_FILE_EXTENSIONS"
     )
     metadata_preview_rows: int = Field(default=50, alias="METADATA_PREVIEW_ROWS")
 

@@ -1,0 +1,182 @@
+# Dataset risk rules only — report issues when a problem is found.
+# If no rule matches, the file is considered clean (no findings).
+# rule_kind: risk — match = problem detected
+# Reload at runtime via FileAnalysisEngine.reload_rules().
+
+rules:
+  # --- Structured data quality ---
+  - id: dq_missing_values
+    name: Missing values in dataset
+    category: data_quality
+    severity: medium
+    rule_kind: risk
+    required: false
+    applies_to: [csv, tsv, json, jsonl, ndjson, xml, yaml, yml, xlsx]
+    match:
+      type: data_quality_finding
+      finding_type: missing_values
+
+  - id: dq_duplicate_rows
+    name: Duplicate rows detected
+    category: data_quality
+    severity: medium
+    rule_kind: risk
+    required: false
+    applies_to: [csv, tsv, json, jsonl, ndjson, xlsx]
+    match:
+      type: data_quality_finding
+      finding_type: duplicate_rows
+
+  - id: dq_empty_dataset
+    name: Empty dataset
+    category: data_quality
+    severity: high
+    rule_kind: risk
+    required: false
+    applies_to: [csv, tsv, json, jsonl, ndjson, xml, yaml, yml, xlsx]
+    match:
+      type: row_count
+      operator: eq
+      value: 0
+
+  # --- Security / PII column names ---
+  - id: col_password_field
+    name: Password column present
+    category: security
+    severity: critical
+    rule_kind: risk
+    required: false
+    applies_to: [csv, tsv, json, jsonl, ndjson, xml, yaml, yml, xlsx]
+    match:
+      type: column_name_pattern
+      pattern: "(?i)(password|passwd|pwd|secret)"
+
+  - id: col_ssn_field
+    name: SSN or national ID column
+    category: security
+    severity: high
+    rule_kind: risk
+    required: false
+    applies_to: [csv, tsv, json, jsonl, ndjson, xml, yaml, yml, xlsx]
+    match:
+      type: column_name_pattern
+      pattern: "(?i)(ssn|social.security|national.id|tax.id)"
+
+  - id: col_email_field
+    name: Email column present
+    category: privacy
+    severity: medium
+    rule_kind: risk
+    required: false
+    applies_to: [csv, tsv, json, jsonl, ndjson, xml, yaml, yml, xlsx]
+    match:
+      type: column_name_pattern
+      pattern: "(?i)(email|e-mail|mail_address)"
+
+  # --- Log analysis ---
+  - id: log_errors_present
+    name: Error log entries detected
+    category: operations
+    severity: high
+    rule_kind: risk
+    required: false
+    applies_to: [log]
+    match:
+      type: log_level
+      level: ERROR
+
+  - id: log_auth_failures
+    name: Authentication failures in logs
+    category: security
+    severity: critical
+    rule_kind: risk
+    required: false
+    applies_to: [log]
+    match:
+      type: log_finding
+      finding_type: authentication_failure
+
+  - id: log_timeouts
+    name: Timeout errors in logs
+    category: operations
+    severity: medium
+    rule_kind: risk
+    required: false
+    applies_to: [log]
+    match:
+      type: log_finding
+      finding_type: timeout_error
+
+  - id: log_stack_traces
+    name: Stack traces in logs
+    category: operations
+    severity: high
+    rule_kind: risk
+    required: false
+    applies_to: [log]
+    match:
+      type: log_finding
+      finding_type: stack_trace
+
+  # --- Unscannable documents ---
+  - id: pdf_no_extractable_text
+    name: PDF has no extractable text
+    category: data_quality
+    severity: medium
+    rule_kind: risk
+    required: false
+    applies_to: [pdf]
+    match:
+      type: text_block_count
+      operator: eq
+      value: 0
+
+  # --- Secrets / credentials in text ---
+  - id: md_has_code_blocks
+    name: Code blocks present (review for secrets)
+    category: security
+    severity: medium
+    rule_kind: risk
+    required: false
+    applies_to: [md]
+    match:
+      type: structure_count
+      field: code_blocks
+      operator: gte
+      value: 1
+
+  - id: text_api_key_pattern
+    name: API key or token pattern in text
+    category: security
+    severity: critical
+    rule_kind: risk
+    required: false
+    applies_to: [txt, log, md, pdf, docx]
+    match:
+      type: regex
+      pattern: "(?i)(api[_-]?key|secret[_-]?key|bearer\\s+[a-z0-9._-]{20,})"
+      min_matches: 1
+
+  - id: text_password_assignment
+    name: Hardcoded password assignment
+    category: security
+    severity: critical
+    rule_kind: risk
+    required: false
+    applies_to: [txt, log, md, pdf, docx, json, yaml, yml]
+    match:
+      type: regex
+      pattern: "(?i)(password\\s*[=:]\\s*[^\\s]{4,})"
+      min_matches: 1
+
+  - id: text_email_present
+    name: Email addresses in document text
+    category: privacy
+    severity: low
+    rule_kind: risk
+    required: false
+    applies_to: [txt, md, pdf, docx, log]
+    match:
+      type: regex
+      pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+      min_matches: 1

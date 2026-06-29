@@ -9,6 +9,10 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { IconUpload } from "@/components/ui/icons";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { filesApi, scansApi, ApiError } from "@/lib/api";
+import {
+  ALLOWED_DATASET_ACCEPT,
+  ALLOWED_DATASET_LABEL,
+} from "@/lib/allowedDatasetFormats";
 import type { UploadedFile } from "@/lib/types";
 import { formatBytes, formatDate } from "@/lib/utils";
 export default function FilesPage() {
@@ -95,7 +99,7 @@ export default function FilesPage() {
       <div className="page-container space-y-6">
         <Card
           title="Upload dataset"
-          description="CSV, JSON, or TXT — max 50 MB. Metadata is extracted on upload."
+          description={`${ALLOWED_DATASET_LABEL} — max 50 MB. Metadata is extracted on upload.`}
         >
           <div
             onDragOver={(e) => {
@@ -116,11 +120,11 @@ export default function FilesPage() {
             <p className="text-sm font-medium text-text-secondary">
               Drag and drop a file, or choose from your computer
             </p>
-            <p className="mt-1 text-xs text-text-muted">CSV · JSON · TXT</p>
+            <p className="mt-1 text-xs text-text-muted">{ALLOWED_DATASET_LABEL}</p>
             <label className="mt-4 inline-block cursor-pointer">
               <input
                 type="file"
-                accept=".csv,.json,.txt"
+                accept={ALLOWED_DATASET_ACCEPT}
                 className="hidden"
                 onChange={handleUpload}
                 disabled={uploading}

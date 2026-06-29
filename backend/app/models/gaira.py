@@ -54,6 +54,31 @@ class AIApplication(Base):
     next_assessment_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    registration_status: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default="approved", index=True
+    )
+    auditor_feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
+    auditor_reviewed_by_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    auditor_reviewed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    approved_by_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    rejected_by_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    rejected_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(nullable=False, server_default="true", index=True)
     metadata_json: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     created_by_user_id: Mapped[uuid.UUID | None] = mapped_column(
@@ -73,6 +98,11 @@ class AIApplication(Base):
 
     compliance_model: Mapped["ComplianceModel | None"] = relationship("ComplianceModel")
     created_by: Mapped["User | None"] = relationship("User", foreign_keys=[created_by_user_id])
+    auditor_reviewed_by: Mapped["User | None"] = relationship(
+        "User", foreign_keys=[auditor_reviewed_by_user_id]
+    )
+    approved_by: Mapped["User | None"] = relationship("User", foreign_keys=[approved_by_user_id])
+    rejected_by: Mapped["User | None"] = relationship("User", foreign_keys=[rejected_by_user_id])
     assessments: Mapped[list["GairaAssessment"]] = relationship(
         "GairaAssessment", back_populates="application", cascade="all, delete-orphan"
     )

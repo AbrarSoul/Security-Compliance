@@ -6,18 +6,21 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.rbac import AuthContext, require_any_permission, require_permission
-from app.core.permissions import GAIRA_MANAGE, GAIRA_READ, GAIRA_READ_ALL
+from app.core.permissions import GAIRA_APPROVE, GAIRA_MANAGE, GAIRA_READ, GAIRA_READ_ALL, GAIRA_REVIEW, ROLE_ADMIN
 from app.db.session import get_db
 from app.schemas.gaira import (
     AIApplicationCreate,
     AIApplicationListResponse,
     AIApplicationResponse,
     AIApplicationUpdate,
+    AuditorFeedbackRequest,
     GairaAssessmentListResponse,
     GairaAssessmentResponse,
     GairaFrameworkResponse,
     GairaModuleDetailResponse,
     GairaModuleSummary,
+    RegistrationActionResponse,
+    RejectApplicationRequest,
     RoaiaListResponse,
     RoaiaRow,
     StartAssessmentRequest,
@@ -81,8 +84,57 @@ async def create_application(
     application = await service.create_application(
         payload=body.model_dump(),
         created_by_user_id=auth.user.id,
+        auto_approve=auth.has_role(ROLE_ADMIN),
     )
     return AIApplicationResponse.model_validate(application)
+
+
+@router.get("/applications/pending-auditor", response_model=AIApplicationListResponse)
+async def list_pending_auditor_applications(
+    limit: int = Query(default=100, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
+    _auth: AuthContext = Depends(require_permission(GAIRA_REVIEW)),
+    service: GairaService = Depends(get_gaira_service),
+):
+    items, total = await service.list_pending_auditor(limit=limit, offset=offset)
+    return AIApplicationListResponse(
+        items=[AIApplicationResponse.model_validate(item) for item in items],
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
+
+
+@router.get("/applications/pending-admin", response_model=AIApplicationListResponse)
+async def list_pending_admin_applications(
+    limit: int = Query(default=100, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
+    _auth: AuthContext = Depends(require_permission(GAIRA_APPROVE)),
+    service: GairaService = Depends(get_gaira_service),
+):
+    items, total = await service.list_pending_admin(limit=limit, offset=offset)
+    return AIApplicationListResponse(
+        items=[AIApplicationResponse.model_validate(item) for item in items],
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
+
+
+@router.get("/applications/pending-auditor/count")
+async def count_pending_auditor_applications(
+    _auth: AuthContext = Depends(require_permission(GAIRA_REVIEW)),
+    service: GairaService = Depends(get_gaira_service),
+):
+    return {"total": await service.count_pending_auditor()}
+
+
+@router.get("/applications/pending-admin/count")
+async def count_pending_admin_applications(
+    _auth: AuthContext = Depends(require_permission(GAIRA_APPROVE)),
+    service: GairaService = Depends(get_gaira_service),
+):
+    return {"total": await service.count_pending_admin()}
 
 
 @router.get("/applications", response_model=AIApplicationListResponse)
@@ -127,6 +179,67 @@ async def update_application(
         application_id, body.model_dump(exclude_unset=True)
     )
     return AIApplicationResponse.model_validate(application)
+
+
+@router.post(
+    "/applications/{application_id}/auditor-feedback",
+    response_model=RegistrationActionResponse,
+)
+async def submit_auditor_feedback(
+    application_id: UUID,
+    body: AuditorFeedbackRequest,
+    auth: AuthContext = Depends(require_permission(GAIRA_REVIEW)),
+    service: GairaService = Depends(get_gaira_service),
+):
+    application = await service.submit_auditor_feedback(
+        application_id,
+        feedback=body.feedback,
+        auditor_user_id=auth.user.id,
+    )
+    return RegistrationActionResponse(
+        message="Auditor feedback submitted. Admins have been notified.",
+        application=AIApplicationResponse.model_validate(application),
+    )
+
+
+@router.post(
+    "/applications/{application_id}/approve",
+    response_model=RegistrationActionResponse,
+)
+async def approve_application(
+    application_id: UUID,
+    auth: AuthContext = Depends(require_permission(GAIRA_APPROVE)),
+    service: GairaService = Depends(get_gaira_service),
+):
+    application = await service.approve_application(
+        application_id,
+        admin_user_id=auth.user.id,
+    )
+    return RegistrationActionResponse(
+        message="AI application approved. The owner can now start assessments.",
+        application=AIApplicationResponse.model_validate(application),
+    )
+
+
+@router.post(
+    "/applications/{application_id}/reject",
+    response_model=RegistrationActionResponse,
+)
+async def reject_application(
+    application_id: UUID,
+    body: RejectApplicationRequest,
+    auth: AuthContext = Depends(require_permission(GAIRA_APPROVE)),
+    service: GairaService = Depends(get_gaira_service),
+):
+    application = await service.reject_application(
+        application_id,
+        reason=body.reason,
+        admin_user_id=auth.user.id,
+    )
+    return RegistrationActionResponse(
+        message="AI application rejected.",
+        application=AIApplicationResponse.model_validate(application),
+    )
 
 
 @router.post(

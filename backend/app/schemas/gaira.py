@@ -86,6 +86,12 @@ class AIApplicationResponse(BaseModel):
     dpia_status: str
     deployed_at: datetime | None
     next_assessment_at: datetime | None
+    registration_status: str
+    auditor_feedback: str | None = None
+    auditor_reviewed_at: datetime | None = None
+    approved_at: datetime | None = None
+    rejection_reason: str | None = None
+    rejected_at: datetime | None = None
     is_active: bool
     metadata_json: dict | None
     created_by_user_id: UUID | None
@@ -93,6 +99,19 @@ class AIApplicationResponse(BaseModel):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class AuditorFeedbackRequest(BaseModel):
+    feedback: str = Field(min_length=1)
+
+
+class RejectApplicationRequest(BaseModel):
+    reason: str = Field(min_length=1)
+
+
+class RegistrationActionResponse(BaseModel):
+    message: str
+    application: AIApplicationResponse
 
 
 class AIApplicationListResponse(BaseModel):

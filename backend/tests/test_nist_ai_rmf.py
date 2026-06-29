@@ -37,5 +37,9 @@ async def test_nist_current_profile(client: AsyncClient):
     assert body["summary"]["total"] == 72
     assert len(body["controls"]) == 72
     assert "alignment_score" in body
+    assert "compliance_status" in body
+    assert "violations" in body["summary"]
+    assert "alignment_gaps" in body["summary"]
+    assert "finding_kind" in body["controls"][0]
     assert "disclaimer" in body
     assert set(body["by_function"].keys()) == {"GOVERN", "MAP", "MEASURE", "MANAGE"}

@@ -173,8 +173,73 @@ class NotificationService:
             "high_risk_execution": prefs.notify_high_risk_execution,
             "repeated_violation": prefs.notify_repeated_violation,
             "system_security_alert": prefs.notify_system_security,
+            "gaira_application": prefs.notify_system_security,
         }
         return mapping.get(notification_type, True)
+
+    async def notify_role(
+        self,
+        role_name: str,
+        *,
+        notification_type: str,
+        severity: str,
+        title: str,
+        message: str,
+        event_type: str,
+        resource_type: str | None = None,
+        resource_id: UUID | None = None,
+        exclude_user_id: UUID | None = None,
+    ) -> list[Notification]:
+        user_ids = await self.repo.list_user_ids_by_role(role_name)
+        created: list[Notification] = []
+        spec = NotificationSpec(
+            notification_type=notification_type,
+            severity=severity,
+            title=title,
+            message=message,
+            notify_admins=False,
+        )
+        envelope = {
+            "event_type": event_type,
+            "resource_type": resource_type,
+            "resource_id": str(resource_id) if resource_id else None,
+            "payload": {"message": message},
+        }
+        for user_id in user_ids:
+            if exclude_user_id is not None and user_id == exclude_user_id:
+                continue
+            row = await self._deliver_to_user(user_id, spec, envelope)
+            if row:
+                created.append(row)
+        return created
+
+    async def notify_user(
+        self,
+        user_id: UUID,
+        *,
+        notification_type: str,
+        severity: str,
+        title: str,
+        message: str,
+        event_type: str,
+        resource_type: str | None = None,
+        resource_id: UUID | None = None,
+    ) -> Notification | None:
+        spec = NotificationSpec(
+            notification_type=notification_type,
+            severity=severity,
+            title=title,
+            message=message,
+            notify_admins=False,
+        )
+        envelope = {
+            "event_type": event_type,
+            "user_id": str(user_id),
+            "resource_type": resource_type,
+            "resource_id": str(resource_id) if resource_id else None,
+            "payload": {"message": message},
+        }
+        return await self._deliver_to_user(user_id, spec, envelope)
 
     @staticmethod
     def _meets_email_severity(min_severity: str, actual: str) -> bool:

@@ -53,6 +53,8 @@ THREAT_MANAGE = "threat:manage"
 GAIRA_READ = "gaira:read"
 GAIRA_MANAGE = "gaira:manage"
 GAIRA_READ_ALL = "gaira:read_all"
+GAIRA_REVIEW = "gaira:review"
+GAIRA_APPROVE = "gaira:approve"
 
 # Role names (match seeded `roles.name`)
 ROLE_ADMIN = "admin"
@@ -93,6 +95,8 @@ ALL_PERMISSIONS: tuple[str, ...] = (
     GAIRA_READ,
     GAIRA_MANAGE,
     GAIRA_READ_ALL,
+    GAIRA_REVIEW,
+    GAIRA_APPROVE,
 )
 
 ROLE_PERMISSION_MAP: dict[str, tuple[str, ...]] = {
@@ -132,5 +136,6 @@ ROLE_PERMISSION_MAP: dict[str, tuple[str, ...]] = {
         THREAT_READ_ALL,
         GAIRA_READ,
         GAIRA_READ_ALL,
+        GAIRA_REVIEW,
     ),
 }

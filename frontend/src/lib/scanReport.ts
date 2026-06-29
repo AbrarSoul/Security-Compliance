@@ -42,7 +42,70 @@ export const COMPLIANCE_VERDICT: Record<string, { title: string; tone: string }>
 };
 
 export function findingTypeLabel(type: string): string {
+  if (type.startsWith("gap_")) {
+    const name = type.slice(4).replace(/_/g, " ");
+    return `Missing: ${name}`;
+  }
+  if (type.startsWith("rule_")) {
+    const name = type.slice(5).replace(/_/g, " ");
+    const labels: Record<string, string> = {
+      "dq missing values": "Missing values in dataset",
+      "dq duplicate rows": "Duplicate rows in dataset",
+      "dq empty dataset": "Empty dataset",
+      "col password field": "Password column detected",
+      "col ssn field": "SSN / national ID column detected",
+      "col email field": "Email column detected",
+      "text api key pattern": "API key or secret pattern",
+      "text password assignment": "Hardcoded password in text",
+      "text email present": "Email addresses in text",
+      "log auth failures": "Authentication failures in log",
+      "log errors present": "Error entries in log",
+    };
+    return labels[name] ?? name.charAt(0).toUpperCase() + name.slice(1);
+  }
   return FINDING_TYPE_LABELS[type] ?? type.replace(/_/g, " ");
+}
+
+export function isComplianceGapFinding(finding: ScanFinding): boolean {
+  return (
+    finding.finding_type.startsWith("gap_") ||
+    finding.evidence?.finding_kind === "compliance_gap"
+  );
+}
+
+export function gapPriorityLabel(severity: string): string {
+  const level = severity?.toLowerCase() ?? "medium";
+  if (level === "critical") return "Critical priority";
+  if (level === "high") return "High priority";
+  if (level === "medium") return "Medium priority";
+  return "Low priority";
+}
+
+export function formatComplianceGapExplanation(
+  finding: ScanFinding
+): string | null {
+  const raw = finding.evidence?.explanation;
+  if (raw == null) return null;
+  const text = String(raw);
+  if (/only\s+0\s+keyword/i.test(text)) {
+    const terms = finding.evidence?.expected_terms;
+    if (Array.isArray(terms) && terms.length > 0) {
+      const examples = terms.slice(0, 4).map((t) => `"${String(t)}"`).join(", ");
+      return (
+        `Required policy content is missing from this document. ` +
+        `None of the expected phrases were found (e.g. ${examples}).`
+      );
+    }
+    return "Required policy content is missing from this document.";
+  }
+  return text;
+}
+
+export function isRuleBasedFinding(finding: ScanFinding): boolean {
+  return (
+    finding.finding_type.startsWith("rule_") ||
+    finding.evidence?.finding_kind === "risk"
+  );
 }
 
 export function findingImpact(type: string): string | null {

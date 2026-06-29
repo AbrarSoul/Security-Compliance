@@ -12,7 +12,6 @@ WORKSHEET_KEYS: dict[str, str] = {
     "GAIRA Light E": "gaira_light",
     "GAIRA Comprehensive E": "gaira_comprehensive",
     "AI Act Check E": "ai_act_check",
-    "AI Act - Four Questions": "ai_act_four_questions",
     "Compliance Check E": "compliance_check",
     "ROAIA E": "roaia",
 }

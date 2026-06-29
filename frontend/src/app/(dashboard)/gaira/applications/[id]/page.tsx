@@ -18,6 +18,7 @@ import { gairaApi, scansApi, ApiError } from "@/lib/api";
 import { PERMS } from "@/lib/permissions";
 import {
   ASSESSMENT_TYPE_LABELS,
+  REGISTRATION_STATUS_LABELS,
   type AIApplication,
   type GairaAssessment,
   type GairaModuleSummary,
@@ -119,6 +120,11 @@ function ApplicationContent() {
 
   if (!application) return null;
 
+  const isApproved = application.registration_status === "approved";
+  const registrationLabel =
+    REGISTRATION_STATUS_LABELS[application.registration_status] ??
+    application.registration_status;
+
   return (
     <>
       <Header title={application.name} subtitle="AI application & GAIRA assessments" />
@@ -128,6 +134,33 @@ function ApplicationContent() {
         </Link>
 
         {error && <Alert variant="error">{error}</Alert>}
+
+        {!isApproved && (
+          <Alert variant={application.registration_status === "rejected" ? "error" : "info"}>
+            <p className="font-medium">Registration status: {registrationLabel}</p>
+            {application.registration_status === "pending_auditor" && (
+              <p className="mt-1 text-sm opacity-90">
+                Your application is waiting for an auditor to review it. Assessments are locked
+                until admin approval.
+              </p>
+            )}
+            {application.registration_status === "pending_admin" && (
+              <p className="mt-1 text-sm opacity-90">
+                Auditor review is complete. An admin will approve or reject this application soon.
+              </p>
+            )}
+            {application.registration_status === "pending_admin" && application.auditor_feedback && (
+              <p className="mt-2 text-sm opacity-90">
+                <span className="font-medium">Auditor feedback:</span> {application.auditor_feedback}
+              </p>
+            )}
+            {application.registration_status === "rejected" && application.rejection_reason && (
+              <p className="mt-1 text-sm opacity-90">
+                Reason: {application.rejection_reason}
+              </p>
+            )}
+          </Alert>
+        )}
 
         <div className="grid gap-6 lg:grid-cols-2">
           <Card title="Application profile">
@@ -143,6 +176,11 @@ function ApplicationContent() {
 
           <Card title="GAIRA status">
             <dl className="space-y-3 text-sm">
+              <Row label="Registration">
+                <Badge variant={flagVariant(application.registration_status)}>
+                  {registrationLabel}
+                </Badge>
+              </Row>
               <Row label="GAIRA status">
                 <Badge variant={flagVariant(application.gaira_status)}>
                   {statusLabel(application.gaira_status)}
@@ -169,14 +207,14 @@ function ApplicationContent() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          {canManage && (
+          {canManage && isApproved && (
             <Button onClick={() => setShowStart((v) => !v)}>
               {showStart ? "Cancel" : "Start assessment"}
             </Button>
           )}
         </div>
 
-        {showStart && canManage && (
+        {showStart && canManage && isApproved && (
           <Card title="Start new assessment">
             <form onSubmit={handleStartAssessment} className="grid max-w-lg gap-4">
               <FormField label="Assessment module" required>
@@ -218,7 +256,11 @@ function ApplicationContent() {
             rows={assessments}
             emptyTitle="No assessments yet"
             emptyDescription={
-              canManage ? "Start an assessment to evaluate this application." : undefined
+              canManage && isApproved
+                ? "Start an assessment to evaluate this application."
+                : !isApproved
+                  ? "Assessments unlock after admin approval."
+                  : undefined
             }
             columns={[
               {

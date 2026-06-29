@@ -36,6 +36,34 @@ async def test_gaira_framework_and_application_flow(client: AsyncClient):
     assert create_resp.status_code == 201, create_resp.text
     app_id = create_resp.json()["id"]
 
+    admin_email = unique_email("gaira-flow-admin")
+    await signup_user(client, email=admin_email)
+    await approve_user(admin_email, "admin")
+    admin_headers = {"Authorization": f"Bearer {(await login_user(client, admin_email))['access_token']}"}
+
+    approve_resp = await client.post(
+        f"/api/v1/gaira/applications/{app_id}/approve",
+        headers=admin_headers,
+    )
+    if approve_resp.status_code == 400 and "admin approval" in approve_resp.json()["detail"].lower():
+        auditor_email = unique_email("gaira-flow-auditor")
+        await signup_user(client, email=auditor_email)
+        await approve_user(auditor_email, "auditor")
+        auditor_headers = {
+            "Authorization": f"Bearer {(await login_user(client, auditor_email))['access_token']}"
+        }
+        feedback_resp = await client.post(
+            f"/api/v1/gaira/applications/{app_id}/auditor-feedback",
+            headers=auditor_headers,
+            json={"feedback": "Approved for testing."},
+        )
+        assert feedback_resp.status_code == 200, feedback_resp.text
+        approve_resp = await client.post(
+            f"/api/v1/gaira/applications/{app_id}/approve",
+            headers=admin_headers,
+        )
+    assert approve_resp.status_code == 200, approve_resp.text
+
     assessment_resp = await client.post(
         f"/api/v1/gaira/applications/{app_id}/assessments",
         headers=headers,

@@ -49,7 +49,7 @@ async def upload_file(
     file: UploadFile = File(...),
     file_service: FileService = Depends(get_file_service),
 ):
-    """Upload a CSV, JSON, or TXT file. Extracts metadata automatically."""
+    """Upload a supported dataset file. Extracts metadata automatically."""
     record = await file_service.upload(ctx.user.id, file)
     return FileUploadResponse(file=_to_file_response(record))
 

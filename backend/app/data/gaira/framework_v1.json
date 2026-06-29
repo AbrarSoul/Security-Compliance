@@ -2697,15 +2697,6 @@
         }
       ]
     },
-    "ai_act_four_questions": {
-      "key": "ai_act_four_questions",
-      "title": "ai_act_four_questions",
-      "version": null,
-      "overview": "AI systems evaluating or classifying people based on social behavior or personal characteristics, leading to detrimental or unfavorable treatment in unrelated contexts or disproportionate to their behavior.",
-      "metadata_fields": [],
-      "steps": [],
-      "questions": []
-    },
     "compliance_check": {
       "key": "compliance_check",
       "title": "Generative AI – Compliance Check",

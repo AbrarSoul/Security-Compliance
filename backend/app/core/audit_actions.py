@@ -67,6 +67,12 @@ class AuditAction:
     GAP_RESOLVED = "gap.resolved"
     GAP_ACKNOWLEDGED = "gap.acknowledged"
 
+    # GAIRA AI risk assessment
+    GAIRA_APPLICATION_REGISTERED = "gaira.application.registered"
+    GAIRA_APPLICATION_REVIEWED = "gaira.application.reviewed"
+    GAIRA_APPLICATION_APPROVED = "gaira.application.approved"
+    GAIRA_APPLICATION_REJECTED = "gaira.application.rejected"
+
     # Security threat detection (Sprint 3)
     THREAT_ANALYSIS_RUN = "threat.analysis_run"
     THREAT_DETECTED = "threat.detected"

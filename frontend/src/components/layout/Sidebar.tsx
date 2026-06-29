@@ -4,6 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePendingRegistrationCount } from "@/hooks/usePendingRegistrationCount";
+import {
+  usePendingGairaApprovalCount,
+  usePendingGairaReviewCount,
+} from "@/hooks/usePendingGairaRegistrationCount";
 import { PERMS } from "@/lib/permissions";
 import {
   IconDashboard,
@@ -71,7 +75,11 @@ function NavSection({ title, items }: { title: string; items: NavItem[] }) {
 export function Sidebar() {
   const { hasPermission, hasAnyPermission, roles, user } = useAuth();
   const canManageUsers = hasPermission(PERMS.USER_MANAGE);
+  const canReviewGaira = hasPermission(PERMS.GAIRA_REVIEW);
+  const canApproveGaira = hasPermission(PERMS.GAIRA_APPROVE);
   const pendingRegistrations = usePendingRegistrationCount(canManageUsers);
+  const pendingGairaReviews = usePendingGairaReviewCount(canReviewGaira);
+  const pendingGairaApprovals = usePendingGairaApprovalCount(canApproveGaira);
 
   const platform: NavItem[] = [
     { href: "/", label: "Overview", icon: IconDashboard },
@@ -129,6 +137,20 @@ export function Sidebar() {
       label: "GAIRA",
       icon: IconShield,
       show: hasAnyPermission(PERMS.GAIRA_READ, PERMS.GAIRA_READ_ALL),
+    },
+    {
+      href: "/gaira/reviews",
+      label: "GAIRA reviews",
+      icon: IconShield,
+      show: canReviewGaira,
+      badgeCount: pendingGairaReviews,
+    },
+    {
+      href: "/gaira/approvals",
+      label: "GAIRA approvals",
+      icon: IconShield,
+      show: canApproveGaira,
+      badgeCount: pendingGairaApprovals,
     },
     {
       href: "/policies",

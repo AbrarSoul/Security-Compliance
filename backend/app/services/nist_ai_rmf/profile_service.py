@@ -19,6 +19,8 @@ from app.models.gaira import AIApplication, GairaAssessment
 from app.models.scan import Scan
 from app.models.user_role import UserRole
 from app.repositories.gap_repository import GapRepository
+from app.services.nist_ai_rmf.alignment_score import compute_alignment_score
+from app.services.nist_ai_rmf.finding_classifier import classify_finding_kind
 from app.services.nist_ai_rmf.framework import NistAiRmfFramework, get_nist_ai_rmf_framework
 from app.services.policies.constants import ACTIVE_POLICY_STATUS
 
@@ -56,7 +58,15 @@ class NistAiRmfProfileService:
         assert self._cache is not None
 
         controls_out: list[dict[str, Any]] = []
-        summary = {"met": 0, "partial": 0, "not_met": 0, "not_assessed": 0, "not_applicable": 0}
+        summary = {
+            "met": 0,
+            "partial": 0,
+            "not_met": 0,
+            "not_assessed": 0,
+            "not_applicable": 0,
+            "violations": 0,
+            "alignment_gaps": 0,
+        }
         by_function: dict[str, dict[str, int]] = {}
 
         for control in self.framework.controls:
@@ -81,11 +91,29 @@ class NistAiRmfProfileService:
                     "reason": control.get("notes") or "Manual attestation or future automation required"
                 }
 
+            finding_kind = classify_finding_kind(status, static_coverage, evaluator_key, detail)
             summary[status] = summary.get(status, 0) + 1
+            if finding_kind == "violation":
+                summary["violations"] += 1
+            elif finding_kind == "alignment_gap":
+                summary["alignment_gaps"] += 1
             by_function.setdefault(
-                fn, {"met": 0, "partial": 0, "not_met": 0, "not_assessed": 0, "not_applicable": 0}
+                fn,
+                {
+                    "met": 0,
+                    "partial": 0,
+                    "not_met": 0,
+                    "not_assessed": 0,
+                    "not_applicable": 0,
+                    "violations": 0,
+                    "alignment_gaps": 0,
+                },
             )
             by_function[fn][status] = by_function[fn].get(status, 0) + 1
+            if finding_kind == "violation":
+                by_function[fn]["violations"] += 1
+            elif finding_kind == "alignment_gap":
+                by_function[fn]["alignment_gaps"] += 1
 
             controls_out.append(
                 {
@@ -98,6 +126,7 @@ class NistAiRmfProfileService:
                     "modules": control.get("modules", []),
                     "trustworthiness": control.get("trustworthiness", []),
                     "status": status,
+                    "finding_kind": finding_kind,
                     "evidence": evidence,
                     "detail": detail,
                     "notes": control.get("notes"),
@@ -106,7 +135,18 @@ class NistAiRmfProfileService:
 
         total = len(controls_out)
         automated = sum(1 for c in controls_out if c["status"] in ("met", "partial", "not_met"))
-        score = round((summary["met"] + summary["partial"] * 0.5) / total * 100, 1) if total else 0.0
+        score, score_detail = compute_alignment_score(
+            summary["met"],
+            summary["partial"],
+            summary["not_met"],
+            summary["violations"],
+        )
+
+        compliance_status = "compliant"
+        if summary["violations"] > 0:
+            compliance_status = "non_compliant"
+        elif summary["alignment_gaps"] > 0 or summary["partial"] > 0:
+            compliance_status = "attention_needed"
 
         return {
             "profile_id": self.framework.profile.get("id"),
@@ -114,7 +154,13 @@ class NistAiRmfProfileService:
             "framework_version": self.framework.version,
             "evaluated_at": datetime.now(UTC).isoformat(),
             "alignment_score": score,
-            "summary": {**summary, "total": total, "automated_evaluations": automated},
+            "compliance_status": compliance_status,
+            "summary": {
+                **summary,
+                "total": total,
+                "automated_evaluations": automated,
+                **score_detail,
+            },
             "by_function": by_function,
             "controls": controls_out,
             "disclaimer": (

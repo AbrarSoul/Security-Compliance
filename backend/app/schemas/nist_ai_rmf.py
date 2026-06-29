@@ -40,6 +40,7 @@ class NistControlStatusItem(BaseModel):
     modules: list[str] = Field(default_factory=list)
     trustworthiness: list[str] = Field(default_factory=list)
     status: str
+    finding_kind: str = "satisfied"
     evidence: list[str] = Field(default_factory=list)
     detail: dict[str, Any] = Field(default_factory=dict)
     notes: str | None = None
@@ -51,6 +52,8 @@ class NistFunctionSummary(BaseModel):
     not_met: int = 0
     not_assessed: int = 0
     not_applicable: int = 0
+    violations: int = 0
+    alignment_gaps: int = 0
 
 
 class NistProfileSummary(BaseModel):
@@ -60,6 +63,12 @@ class NistProfileSummary(BaseModel):
     not_met: int
     not_assessed: int
     not_applicable: int
+    violations: int = 0
+    alignment_gaps: int = 0
+    evaluated_total: int = 0
+    progress_total: int = 0
+    base_score: float = 0.0
+    violation_deduction: float = 0.0
     automated_evaluations: int
 
 
@@ -69,6 +78,7 @@ class NistCurrentProfileResponse(BaseModel):
     framework_version: str
     evaluated_at: str
     alignment_score: float
+    compliance_status: str = "attention_needed"
     summary: NistProfileSummary
     by_function: dict[str, NistFunctionSummary]
     controls: list[NistControlStatusItem]

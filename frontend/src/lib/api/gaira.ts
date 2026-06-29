@@ -86,4 +86,54 @@ export const gairaApi = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+
+  listPendingAuditor: (params?: { limit?: number; offset?: number }) => {
+    const q = new URLSearchParams();
+    if (params?.limit) q.set("limit", String(params.limit));
+    if (params?.offset) q.set("offset", String(params.offset));
+    const qs = q.toString();
+    return request<{ items: AIApplication[]; total: number; limit: number; offset: number }>(
+      `/gaira/applications/pending-auditor${qs ? `?${qs}` : ""}`
+    );
+  },
+
+  listPendingAdmin: (params?: { limit?: number; offset?: number }) => {
+    const q = new URLSearchParams();
+    if (params?.limit) q.set("limit", String(params.limit));
+    if (params?.offset) q.set("offset", String(params.offset));
+    const qs = q.toString();
+    return request<{ items: AIApplication[]; total: number; limit: number; offset: number }>(
+      `/gaira/applications/pending-admin${qs ? `?${qs}` : ""}`
+    );
+  },
+
+  countPendingAuditor: () =>
+    request<{ total: number }>("/gaira/applications/pending-auditor/count"),
+
+  countPendingAdmin: () =>
+    request<{ total: number }>("/gaira/applications/pending-admin/count"),
+
+  submitAuditorFeedback: (applicationId: string, feedback: string) =>
+    request<{ message: string; application: AIApplication }>(
+      `/gaira/applications/${applicationId}/auditor-feedback`,
+      {
+        method: "POST",
+        body: JSON.stringify({ feedback }),
+      }
+    ),
+
+  approveApplication: (applicationId: string) =>
+    request<{ message: string; application: AIApplication }>(
+      `/gaira/applications/${applicationId}/approve`,
+      { method: "POST" }
+    ),
+
+  rejectApplication: (applicationId: string, reason: string) =>
+    request<{ message: string; application: AIApplication }>(
+      `/gaira/applications/${applicationId}/reject`,
+      {
+        method: "POST",
+        body: JSON.stringify({ reason }),
+      }
+    ),
 };

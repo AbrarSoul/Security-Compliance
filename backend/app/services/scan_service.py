@@ -12,6 +12,8 @@ from app.models.scan_recommendation import ScanRecommendation
 from app.repositories.file_repository import FileRepository
 from app.repositories.scan_repository import ScanRepository
 from app.services.audit_service import AuditService
+from app.services.files.analysis import FileAnalysisEngine
+from app.services.files.extraction.service import columns_from_extraction
 from app.services.recommendations import RecommendationEngine
 from app.services.rule_service import RuleService
 from app.services.scanner.scanner import ComplianceScanner
@@ -32,7 +34,8 @@ class ScanService:
         self.storage = storage
         self.files = FileRepository(db)
         self.scans = ScanRepository(db)
-        self.scanner = scanner or ComplianceScanner()
+        self.analysis_engine = FileAnalysisEngine()
+        self.scanner = scanner or ComplianceScanner(analysis_engine=self.analysis_engine)
         self.scoring_engine = scoring_engine or ComplianceScoringEngine()
         self.recommendation_engine = recommendation_engine or RecommendationEngine()
         self.rule_service = RuleService(db)
@@ -50,7 +53,18 @@ class ScanService:
 
         try:
             content = await self.storage.read(file_record.storage_key)
-            detections = self.scanner.scan_content(file_record.file_type, content)
+            extracted, analysis_report = self.analysis_engine.analyze_content(
+                file_record.file_type,
+                content,
+                file_id=file_id,
+                file_name=file_record.original_name,
+            )
+            columns = columns_from_extraction(extracted)
+            pattern_findings = self.scanner.scan_columns(columns)
+            rule_findings = self.analysis_engine.analysis_findings_to_detections(
+                analysis_report.findings
+            )
+            detections = self.scanner._merge_detections(pattern_findings, rule_findings)
 
             finding_rows = [
                 ScanFinding(
@@ -67,10 +81,17 @@ class ScanService:
             await self.scans.add_findings(finding_rows)
 
             score_result = self.scoring_engine.score(detections)
-            scan.risk_score = score_result.risk_score
+            combined_risk = min(
+                100,
+                max(score_result.risk_score, analysis_report.risk_score),
+            )
+            scan.risk_score = combined_risk
             scan.compliance_status = score_result.compliance_status
             scan.classification = score_result.classification
-            scan.score_breakdown_json = score_result.to_breakdown_dict()
+            breakdown = score_result.to_breakdown_dict()
+            breakdown["file_analysis"] = analysis_report.to_dict()
+            breakdown["compliance_score"] = analysis_report.compliance_score
+            scan.score_breakdown_json = breakdown
 
             recommendations = self.recommendation_engine.generate(detections, score_result)
             recommendation_rows = [

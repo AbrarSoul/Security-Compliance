@@ -43,8 +43,8 @@ export const FRAMEWORK_LABELS: Record<string, string> = {
 
 export const POSTURE_STATUS_LABELS: Record<string, string> = {
   met: "Compliant",
-  partial: "Partial",
-  not_met: "Non-compliant",
+  partial: "Setup in progress",
+  not_met: "Action needed",
   not_assessed: "Not assessed",
 };
 

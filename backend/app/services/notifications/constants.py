@@ -24,6 +24,7 @@ TYPE_SUSPICIOUS_ACTIVITY = "suspicious_activity"
 TYPE_HIGH_RISK_EXECUTION = "high_risk_execution"
 TYPE_REPEATED_VIOLATION = "repeated_violation"
 TYPE_SYSTEM_SECURITY = "system_security_alert"
+TYPE_GAIRA_APPLICATION = "gaira_application"
 
 CHANNEL_IN_APP = "in_app"
 CHANNEL_EMAIL = "email"

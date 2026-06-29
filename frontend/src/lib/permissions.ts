@@ -26,6 +26,8 @@ export const PERMS = {
   GAIRA_READ: "gaira:read",
   GAIRA_MANAGE: "gaira:manage",
   GAIRA_READ_ALL: "gaira:read_all",
+  GAIRA_REVIEW: "gaira:review",
+  GAIRA_APPROVE: "gaira:approve",
 } as const;
 
 export const ROLES = {

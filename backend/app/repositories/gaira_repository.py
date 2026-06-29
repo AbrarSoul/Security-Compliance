@@ -49,6 +49,34 @@ class GairaRepository:
         )
         return list(result.scalars().all()), total
 
+    async def list_by_registration_status(
+        self,
+        registration_status: str,
+        *,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> tuple[list[AIApplication], int]:
+        base = select(AIApplication).where(
+            AIApplication.registration_status == registration_status
+        )
+        count_q = select(func.count()).select_from(base.subquery())
+        total = int((await self.db.execute(count_q)).scalar_one())
+        result = await self.db.execute(
+            base.options(selectinload(AIApplication.assessments))
+            .order_by(AIApplication.created_at.desc())
+            .limit(limit)
+            .offset(offset)
+        )
+        return list(result.scalars().all()), total
+
+    async def count_by_registration_status(self, registration_status: str) -> int:
+        result = await self.db.execute(
+            select(func.count())
+            .select_from(AIApplication)
+            .where(AIApplication.registration_status == registration_status)
+        )
+        return int(result.scalar_one())
+
     async def update_application(self, application: AIApplication) -> AIApplication:
         await self.db.flush()
         await self.db.refresh(application)

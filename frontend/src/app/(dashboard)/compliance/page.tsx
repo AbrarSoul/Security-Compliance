@@ -47,6 +47,18 @@ function FrameworkCard({ framework }: { framework: FrameworkPosture }) {
                 <span className="font-mono font-semibold">{framework.alignment_score}%</span>
               </span>
             )}
+            {framework.id === "nist_ai_rmf" && framework.summary?.violations != null && (
+              <span>
+                Violations:{" "}
+                <span className="font-mono font-semibold">{framework.summary.violations}</span>
+              </span>
+            )}
+            {framework.id === "nist_ai_rmf" && framework.summary?.alignment_gaps != null && (
+              <span>
+                Setup gaps:{" "}
+                <span className="font-mono font-semibold">{framework.summary.alignment_gaps}</span>
+              </span>
+            )}
             <span>
               Open issues:{" "}
               <span className="font-mono font-semibold">{framework.open_issue_count}</span>
